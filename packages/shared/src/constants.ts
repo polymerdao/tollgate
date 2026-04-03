@@ -1,0 +1,9 @@
+export const USDC_DECIMALS = 6;
+export const USDC_MINOR_UNIT = 10 ** USDC_DECIMALS; // 1_000_000
+export const BASE_CHAIN_ID = 8453;
+export const PAYMENT_ID_TTL_MS = 5 * 60 * 1000; // 5 minutes
+export const SITE_CACHE_TTL_S = 60;
+export const RATE_LIMIT_WINDOW_S = 60;
+export const RATE_LIMIT_MAX_REQUESTS = 60;
+export const PAYOUT_THRESHOLD_MINOR = 10 * USDC_MINOR_UNIT; // $10
+export const SECRET_ROTATION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
