@@ -257,7 +257,7 @@ export default function NewSitePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+            <div className="border border-amber-600/30 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:bg-amber-500/10 dark:text-amber-300">
               Stripe Connect setup will be available soon. You can skip this step for now and configure it later in Settings.
             </div>
             <div className="flex gap-3">
