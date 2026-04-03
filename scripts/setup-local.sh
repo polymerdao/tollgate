@@ -4,16 +4,33 @@
 
 set -e
 
-echo "==> Applying D1 migration..."
+MIGRATION="../../packages/shared/migrations/0000_initial.sql"
+SEED="../../packages/shared/migrations/seed-local.sql"
+
+echo "==> Applying D1 migration (gateway)..."
 cd apps/gateway
-npx wrangler d1 execute tollgate --file=../../packages/shared/migrations/0000_initial.sql --local
-echo ""
-
-echo "==> Seeding test data..."
-npx wrangler d1 execute tollgate --file=../../packages/shared/migrations/seed-local.sql --local
+npx wrangler d1 execute tollgate --file=$MIGRATION --local
 cd ../..
-echo ""
 
+echo ""
+echo "==> Applying D1 migration (dashboard)..."
+cd apps/dashboard
+npx wrangler d1 execute tollgate --file=$MIGRATION --local
+cd ../..
+
+echo ""
+echo "==> Seeding test data (gateway)..."
+cd apps/gateway
+npx wrangler d1 execute tollgate --file=$SEED --local
+cd ../..
+
+echo ""
+echo "==> Seeding test data (dashboard)..."
+cd apps/dashboard
+npx wrangler d1 execute tollgate --file=$SEED --local
+cd ../..
+
+echo ""
 echo "==> Done! Start dev servers with:"
 echo "    pnpm dev:gateway     # Gateway at localhost:8787"
 echo "    pnpm dev:dashboard   # Dashboard at localhost:3000"
