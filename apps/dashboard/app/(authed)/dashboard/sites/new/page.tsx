@@ -197,9 +197,21 @@ export default function NewSitePage() {
                       <tr>
                         <td className="px-4 py-3 font-mono text-xs">TXT</td>
                         <td className="px-4 py-3">
-                          <code className="text-xs font-mono">
-                            _tollgate.{site.domain}
-                          </code>
+                          <div className="flex items-center gap-1">
+                            <code className="text-xs font-mono">
+                              _tollgate.{site.domain}
+                            </code>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 shrink-0"
+                              onClick={() =>
+                                copyToClipboard(`_tollgate.${site.domain}`)
+                              }
+                            >
+                              <Copy className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           <code className="text-xs font-mono break-all">
