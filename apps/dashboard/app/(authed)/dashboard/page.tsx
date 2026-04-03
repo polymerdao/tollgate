@@ -16,7 +16,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Globe, Plus, ArrowRight, Zap, Shield, BarChart3 } from "lucide-react";
+import { Globe, Plus, ArrowRight, Zap, Shield, BarChart3, CheckCircle, Clock } from "lucide-react";
 
 export default function DashboardPage() {
   const { data: sites, isLoading } = useSites();
@@ -126,6 +126,7 @@ export default function DashboardPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Domain</TableHead>
+                <TableHead>Verified</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Balance</TableHead>
                 <TableHead className="w-12" />
@@ -135,6 +136,13 @@ export default function DashboardPage() {
               {sites.map((site) => (
                 <TableRow key={site.id}>
                   <TableCell className="font-medium">{site.domain}</TableCell>
+                  <TableCell>
+                    {site.verifiedAt ? (
+                      <CheckCircle className="h-4 w-4 text-emerald-500" />
+                    ) : (
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={
