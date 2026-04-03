@@ -1,4 +1,4 @@
-CREATE TABLE sites (
+CREATE TABLE IF NOT EXISTS sites (
   id TEXT PRIMARY KEY,
   account_id TEXT NOT NULL,
   domain TEXT NOT NULL UNIQUE,
@@ -17,19 +17,19 @@ CREATE TABLE sites (
   updated_at TEXT NOT NULL
 );
 
-CREATE TABLE bot_allowlist (
+CREATE TABLE IF NOT EXISTS bot_allowlist (
   id TEXT PRIMARY KEY,
   site_id TEXT NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
   user_agent_pattern TEXT NOT NULL
 );
 
-CREATE TABLE path_exclusions (
+CREATE TABLE IF NOT EXISTS path_exclusions (
   id TEXT PRIMARY KEY,
   site_id TEXT NOT NULL REFERENCES sites(id) ON DELETE CASCADE,
   pattern TEXT NOT NULL
 );
 
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
   id TEXT PRIMARY KEY,
   site_id TEXT NOT NULL REFERENCES sites(id),
   payment_id TEXT NOT NULL UNIQUE,
@@ -43,13 +43,13 @@ CREATE TABLE payments (
   verified_at TEXT
 );
 
-CREATE TABLE balances (
+CREATE TABLE IF NOT EXISTS balances (
   site_id TEXT PRIMARY KEY REFERENCES sites(id) ON DELETE CASCADE,
   amount INTEGER NOT NULL DEFAULT 0,
   updated_at TEXT NOT NULL
 );
 
-CREATE TABLE payouts (
+CREATE TABLE IF NOT EXISTS payouts (
   id TEXT PRIMARY KEY,
   site_id TEXT NOT NULL REFERENCES sites(id),
   amount INTEGER NOT NULL,
@@ -58,11 +58,11 @@ CREATE TABLE payouts (
   created_at TEXT NOT NULL
 );
 
-CREATE INDEX idx_sites_account_id ON sites(account_id);
-CREATE INDEX idx_sites_domain ON sites(domain);
-CREATE INDEX idx_payments_site_id ON payments(site_id);
-CREATE INDEX idx_payments_tx_hash ON payments(tx_hash);
-CREATE INDEX idx_balances_amount ON balances(amount);
-CREATE INDEX idx_bot_allowlist_site_id ON bot_allowlist(site_id);
-CREATE INDEX idx_path_exclusions_site_id ON path_exclusions(site_id);
-CREATE INDEX idx_payouts_site_id ON payouts(site_id);
+CREATE INDEX IF NOT EXISTS idx_sites_account_id ON sites(account_id);
+CREATE INDEX IF NOT EXISTS idx_sites_domain ON sites(domain);
+CREATE INDEX IF NOT EXISTS idx_payments_site_id ON payments(site_id);
+CREATE INDEX IF NOT EXISTS idx_payments_tx_hash ON payments(tx_hash);
+CREATE INDEX IF NOT EXISTS idx_balances_amount ON balances(amount);
+CREATE INDEX IF NOT EXISTS idx_bot_allowlist_site_id ON bot_allowlist(site_id);
+CREATE INDEX IF NOT EXISTS idx_path_exclusions_site_id ON path_exclusions(site_id);
+CREATE INDEX IF NOT EXISTS idx_payouts_site_id ON payouts(site_id);

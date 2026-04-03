@@ -1,7 +1,7 @@
 -- Seed data for local development
 -- Run: cd apps/gateway && npx wrangler d1 execute tollgate --file=../../packages/shared/migrations/seed-local.sql --local
 
-INSERT INTO sites (
+INSERT OR IGNORE INTO sites (
   id, account_id, domain, status, verification_token, verified_at,
   stripe_account_id, default_price, origin_method, origin_url,
   origin_secret, origin_secret_prev, origin_secret_prev_expires_at,
@@ -23,11 +23,11 @@ INSERT INTO sites (
   '2026-04-03T00:00:00.000Z'
 );
 
-INSERT INTO balances (site_id, amount, updated_at)
+INSERT OR IGNORE INTO balances (site_id, amount, updated_at)
 VALUES ('01JQTEST000000000000000001', 0, '2026-04-03T00:00:00.000Z');
 
 -- A second test site for the dashboard (simulates pay.example.com → example.com)
-INSERT INTO sites (
+INSERT OR IGNORE INTO sites (
   id, account_id, domain, status, verification_token, verified_at,
   stripe_account_id, default_price, origin_method, origin_url,
   origin_secret, origin_secret_prev, origin_secret_prev_expires_at,
@@ -50,19 +50,19 @@ INSERT INTO sites (
   '2026-04-03T00:00:00.000Z'
 );
 
-INSERT INTO balances (site_id, amount, updated_at)
+INSERT OR IGNORE INTO balances (site_id, amount, updated_at)
 VALUES ('01JQTEST000000000000000002', 5230000, '2026-04-03T00:00:00.000Z');
 
 -- Sample bot allowlist entry
-INSERT INTO bot_allowlist (id, site_id, user_agent_pattern)
+INSERT OR IGNORE INTO bot_allowlist (id, site_id, user_agent_pattern)
 VALUES ('01JQTEST000000000000000010', '01JQTEST000000000000000002', 'Googlebot');
 
 -- Sample path exclusion
-INSERT INTO path_exclusions (id, site_id, pattern)
+INSERT OR IGNORE INTO path_exclusions (id, site_id, pattern)
 VALUES ('01JQTEST000000000000000020', '01JQTEST000000000000000002', '/admin.*');
 
 -- Sample verified payments for analytics
-INSERT INTO payments (id, site_id, payment_id, tx_hash, payer_address, amount, path, status, user_agent, created_at, verified_at)
+INSERT OR IGNORE INTO payments (id, site_id, payment_id, tx_hash, payer_address, amount, path, status, user_agent, created_at, verified_at)
 VALUES
   ('01JQPAY0000000000000000001', '01JQTEST000000000000000002', 'pay_001', '0xabc1', '0xbot1', 50000, '/article/ai-trends', 'verified', 'GPTBot/1.0', '2026-04-01T10:00:00.000Z', '2026-04-01T10:00:02.000Z'),
   ('01JQPAY0000000000000000002', '01JQTEST000000000000000002', 'pay_002', '0xabc2', '0xbot1', 50000, '/article/ai-trends', 'verified', 'GPTBot/1.0', '2026-04-01T14:00:00.000Z', '2026-04-01T14:00:03.000Z'),
