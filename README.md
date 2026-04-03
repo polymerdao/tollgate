@@ -10,6 +10,7 @@ Monorepo powered by Turborepo + pnpm.
 |---------|-------------|
 | `apps/gateway` | Hono API on Cloudflare Workers — returns HTTP 402 with x402 payment terms, verifies on-chain payments, proxies origin content |
 | `apps/dashboard` | Next.js on Cloudflare Workers (via OpenNextJS) — publisher onboarding, pricing config, analytics, bot management |
+| `apps/demo-site` | Hono on Cloudflare Workers — example origin site with premium content endpoints for Tollgate demos |
 | `packages/shared` | D1 schema (Drizzle), shared types, Zod validators |
 | `packages/x402` | x402 payment verification via viem |
 
@@ -21,6 +22,7 @@ Monorepo powered by Turborepo + pnpm.
 |---------|-----|
 | Gateway | https://tollgate-gateway.operations-4bf.workers.dev |
 | Dashboard | https://tollgate-dashboard.operations-4bf.workers.dev |
+| Demo Site | https://tollgate-demo-site.operations-4bf.workers.dev |
 
 ### Testnet (Base Sepolia)
 
@@ -28,6 +30,7 @@ Monorepo powered by Turborepo + pnpm.
 |---------|-----|
 | Gateway | https://tollgate-gateway-testnet.operations-4bf.workers.dev |
 | Dashboard | https://tollgate-dashboard-testnet.operations-4bf.workers.dev |
+| Demo Site | https://tollgate-demo-site-testnet.operations-4bf.workers.dev |
 
 ## Development
 

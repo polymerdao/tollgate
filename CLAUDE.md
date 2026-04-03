@@ -7,6 +7,7 @@ x402 bot payment gateway. Publishers charge AI bots for content access via on-ch
 - Monorepo: Turborepo + pnpm
 - `apps/gateway` — Hono on Cloudflare Workers (gw.obul.ai)
 - `apps/dashboard` — Next.js on Cloudflare Workers via OpenNextJS (tollgate.obul.ai)
+- `apps/demo-site` — Hono on Cloudflare Workers, example origin site for demos
 - `packages/shared` — D1 schema (Drizzle), types, Zod validators
 - `packages/x402` — x402 payment verification via viem
 
@@ -23,10 +24,10 @@ pnpm typecheck       # Type-check all packages
 
 Cloudflare account: Polymer Labs (`4bfbcd216e0ba45b6384012c87f37584`). Two environments:
 
-| Env | Gateway | Dashboard |
-|-----|---------|-----------|
-| mainnet | `tollgate-gateway` | `tollgate-dashboard` |
-| testnet | `tollgate-gateway-testnet` | `tollgate-dashboard-testnet` |
+| Env | Gateway | Dashboard | Demo Site |
+|-----|---------|-----------|-----------|
+| mainnet | `tollgate-gateway` | `tollgate-dashboard` | `tollgate-demo-site` |
+| testnet | `tollgate-gateway-testnet` | `tollgate-dashboard-testnet` | `tollgate-demo-site-testnet` |
 
 ```bash
 # From apps/gateway or apps/dashboard:
@@ -55,7 +56,7 @@ Cloudflare D1 (SQLite). Schema defined in `packages/shared/src/schema.ts`. Migra
 
 ## Auth
 
-Google OAuth via obul-accounts backend. Dashboard calls `/auth/session` to check session. Dev bypass: set `NEXT_PUBLIC_DEV_BYPASS_AUTH=true` in `.env.local`.
+Self-contained Google OAuth (no external backend). Server-side flow in `app/api/auth/` routes — login, callback, session, logout. Session stored as HttpOnly JWT cookie (`tollgate_session`). Secrets: `SESSION_SECRET` and `GOOGLE_CLIENT_SECRET` set via `wrangler secret put`. User identified by email address (`sites.accountId`).
 
 ## Design
 
