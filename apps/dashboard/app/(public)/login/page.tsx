@@ -3,14 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useSession, startGoogleLogin } from "@/lib/auth-client";
-import {
-  AUTH_FLOW_DEVICE,
-  AUTH_FLOW_QUERY_PARAM,
-  buildDashboardUrl,
-} from "@/lib/auth-flow";
-import { getPostLoginOrigin } from "@/lib/env";
 import { useSearchParams } from "next/navigation";
-import { toast } from "@/components/ui/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 function GoogleIcon({ className }: { className?: string }) {
@@ -57,33 +50,17 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
   const { data: session, isPending } = useSession();
   const [loading, setLoading] = useState(false);
-  const authFlow =
-    searchParams.get(AUTH_FLOW_QUERY_PARAM) === AUTH_FLOW_DEVICE
-      ? AUTH_FLOW_DEVICE
-      : undefined;
+  const hasError = searchParams.get("error") === "auth_failed";
 
   useEffect(() => {
     if (!isPending && session?.user) {
-      const dashboardUrl = buildDashboardUrl(
-        window.location.origin,
-        getPostLoginOrigin()
-      );
-      window.location.replace(dashboardUrl);
+      window.location.replace("/dashboard");
     }
   }, [isPending, session]);
 
   const handleSignIn = () => {
-    try {
-      setLoading(true);
-      startGoogleLogin(authFlow);
-    } catch {
-      toast({
-        title: "Sign-in unavailable",
-        description: "Auth server is unreachable or not configured.",
-        variant: "error"
-      });
-      setLoading(false);
-    }
+    setLoading(true);
+    startGoogleLogin();
   };
 
   return (
@@ -92,12 +69,10 @@ function LoginPageContent() {
         <ThemeToggle />
       </div>
 
-      {/* Login card */}
       <div className="card-bracket w-full max-w-md bg-card/90 p-8 backdrop-blur-sm">
         <div className="bracket-bl" />
         <div className="bracket-br" />
 
-        {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">LOGIN</h1>
           <p className="mt-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
@@ -105,7 +80,12 @@ function LoginPageContent() {
           </p>
         </div>
 
-        {/* Sign in button */}
+        {hasError && (
+          <p className="mt-6 text-center text-sm text-red-500">
+            Sign-in failed. Please try again.
+          </p>
+        )}
+
         <div className="mt-10 space-y-4">
           <button
             type="button"
@@ -131,7 +111,6 @@ function LoginPageContent() {
           </button>
         </div>
 
-        {/* Terms */}
         <p className="mt-8 text-center text-xs text-muted-foreground">
           By continuing, you agree to Tollgate&apos;s usage policies and billing terms.
         </p>
