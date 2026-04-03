@@ -348,17 +348,42 @@ export default function NewSitePage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">1. Add a CNAME record:</p>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 border border-border bg-muted/50 px-3 py-2 text-xs font-mono">
-                  pay.{siteDomain} CNAME gw.obul.ai
-                </code>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => copyToClipboard(`pay.${siteDomain} CNAME gw.obul.ai`)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
+              <div className="overflow-hidden border border-border">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/50">
+                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Type</th>
+                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Name</th>
+                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Target</th>
+                      <th className="w-12 px-2 py-2" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-4 py-3 font-mono text-xs">CNAME</td>
+                      <td className="px-4 py-3">
+                        <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                          pay.{siteDomain}
+                        </code>
+                      </td>
+                      <td className="px-4 py-3">
+                        <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                          gw.obul.ai
+                        </code>
+                      </td>
+                      <td className="px-2 py-3">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => copyToClipboard("gw.obul.ai")}
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
