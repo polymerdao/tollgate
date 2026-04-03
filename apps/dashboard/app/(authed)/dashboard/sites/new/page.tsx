@@ -178,33 +178,62 @@ export default function NewSitePage() {
                 </Button>
               </>
             ) : !verified ? (
-              <>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Add the following DNS TXT record to verify ownership:
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <code className="flex-1 overflow-auto border border-border bg-muted/50 px-3 py-2 text-xs font-mono">
-                      _tollgate.{site.domain} TXT &quot;tollgate-verify={site.verificationToken}&quot;
-                    </code>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        copyToClipboard(
-                          `_tollgate.${site.domain} TXT "tollgate-verify=${site.verificationToken}"`
-                        )
-                      }
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
+              <div className="space-y-5">
+                <p className="text-sm text-muted-foreground">
+                  Add this TXT record to your DNS provider to verify ownership of <span className="font-medium text-foreground">{site.domain}</span>.
+                </p>
+
+                <div className="overflow-hidden border border-border">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/50">
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">Type</th>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">Name</th>
+                        <th className="px-4 py-2 text-left font-medium text-muted-foreground">Value</th>
+                        <th className="w-12 px-2 py-2" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="px-4 py-3 font-mono text-xs">TXT</td>
+                        <td className="px-4 py-3">
+                          <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                            _tollgate.{site.domain}
+                          </code>
+                        </td>
+                        <td className="px-4 py-3">
+                          <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono break-all">
+                            tollgate-verify={site.verificationToken}
+                          </code>
+                        </td>
+                        <td className="px-2 py-3">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() =>
+                              copyToClipboard(
+                                `tollgate-verify=${site.verificationToken}`
+                              )
+                            }
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </Button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
+
+                <p className="text-xs text-muted-foreground">
+                  DNS changes can take up to 48 hours to propagate. You can close this page and verify later from the site settings.
+                </p>
+
                 <Button onClick={handleVerify} disabled={loading}>
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                   Verify Domain
                 </Button>
-              </>
+              </div>
             ) : (
               <div className="flex items-center gap-2 text-emerald-500">
                 <CheckCircle className="h-5 w-5" />
