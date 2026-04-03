@@ -1,0 +1,17 @@
+name = "tollgate-gateway"
+main = "src/index.ts"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tollgate"
+database_id = "TODO_REPLACE_WITH_ACTUAL_ID"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "TODO_REPLACE_WITH_ACTUAL_ID"
+
+[vars]
+TOLLGATE_WALLET_ADDRESS = "0xTODO_REPLACE"
+BASE_RPC_URL = "https://mainnet.base.org"
