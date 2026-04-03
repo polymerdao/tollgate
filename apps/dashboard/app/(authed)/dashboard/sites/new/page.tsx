@@ -197,12 +197,12 @@ export default function NewSitePage() {
                       <tr>
                         <td className="px-4 py-3 font-mono text-xs">TXT</td>
                         <td className="px-4 py-3">
-                          <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                          <code className="text-xs font-mono">
                             _tollgate.{site.domain}
                           </code>
                         </td>
                         <td className="px-4 py-3">
-                          <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono break-all">
+                          <code className="text-xs font-mono break-all">
                             tollgate-verify={site.verificationToken}
                           </code>
                         </td>
@@ -362,12 +362,12 @@ export default function NewSitePage() {
                     <tr>
                       <td className="px-4 py-3 font-mono text-xs">CNAME</td>
                       <td className="px-4 py-3">
-                        <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                        <code className="text-xs font-mono">
                           pay.{siteDomain}
                         </code>
                       </td>
                       <td className="px-4 py-3">
-                        <code className="rounded bg-muted/50 px-1.5 py-0.5 text-xs font-mono">
+                        <code className="text-xs font-mono">
                           gw.obul.ai
                         </code>
                       </td>
