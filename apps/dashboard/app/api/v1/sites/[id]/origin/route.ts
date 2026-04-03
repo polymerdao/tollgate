@@ -39,6 +39,8 @@ export async function PUT(
       originMethod: parsed.data.originMethod,
       originUrl: parsed.data.originUrl ?? null,
       originSecret: parsed.data.originSecret ?? null,
+      originSecretPrev: null,
+      originSecretPrevExpiresAt: null,
       updatedAt: now,
     })
     .where(eq(sites.id, id));

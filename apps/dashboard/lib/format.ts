@@ -2,6 +2,10 @@ export function formatUSDC(minorUnits: number): string {
   return `$${(minorUnits / 1_000_000).toFixed(2)}`;
 }
 
+export function formatUSD(cents: number): string {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
     month: "short",

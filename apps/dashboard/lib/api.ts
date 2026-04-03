@@ -11,6 +11,8 @@ export interface AnalyticsData {
 
 export interface SiteWithBalance extends Site {
   balance: number;
+  allowlist?: string[];
+  exclusions?: string[];
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {

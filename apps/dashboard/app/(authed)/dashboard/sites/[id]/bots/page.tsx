@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSite } from "@/lib/hooks/use-site";
 import { updateAllowlist, updateExclusions } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ import { Plus, Trash2, Loader2, CheckCircle } from "lucide-react";
 export default function BotsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const queryClient = useQueryClient();
+  const { data: site } = useSite(id);
 
   // Allowlist state
   const [allowlist, setAllowlist] = useState<string[]>([]);
@@ -39,6 +41,12 @@ export default function BotsPage({ params }: { params: Promise<{ id: string }> }
   const [exclusionInput, setExclusionInput] = useState("");
   const [exclusionDialogOpen, setExclusionDialogOpen] = useState(false);
   const [exclusionsSaved, setExclusionsSaved] = useState(false);
+
+  // Load existing entries from server
+  useEffect(() => {
+    if (site?.allowlist) setAllowlist(site.allowlist);
+    if (site?.exclusions) setExclusions(site.exclusions);
+  }, [site?.allowlist, site?.exclusions]);
 
   const allowlistMutation = useMutation({
     mutationFn: (entries: { userAgentPattern: string }[]) =>

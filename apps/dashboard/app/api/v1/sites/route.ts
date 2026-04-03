@@ -47,6 +47,20 @@ export async function POST(request: NextRequest) {
   const { env } = await getCloudflareContext();
   const db = drizzle(env.DB);
 
+  // Check domain uniqueness
+  const existing = await db
+    .select({ id: sites.id })
+    .from(sites)
+    .where(eq(sites.domain, parsed.data.domain))
+    .get();
+
+  if (existing) {
+    return NextResponse.json(
+      { error: "Domain already registered" },
+      { status: 409 }
+    );
+  }
+
   const now = new Date().toISOString();
   const id = ulid();
   const verificationToken = crypto.randomUUID();

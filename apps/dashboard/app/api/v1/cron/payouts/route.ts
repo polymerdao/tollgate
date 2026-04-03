@@ -6,11 +6,12 @@ import { sites, balances, payouts, PAYOUT_THRESHOLD_MINOR } from "@tollgate/shar
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getStripe } from "@/lib/stripe";
 
-const CRON_SECRET = process.env.CRON_SECRET;
-
 export async function POST(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
   const authHeader = request.headers.get("authorization");
-  if (CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`) {
+
+  // Fail closed: reject if secret not configured or doesn't match
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

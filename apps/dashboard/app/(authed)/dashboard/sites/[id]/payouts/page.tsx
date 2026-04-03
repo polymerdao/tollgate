@@ -3,7 +3,7 @@
 import { use } from "react";
 import { useSite } from "@/lib/hooks/use-site";
 import { usePayouts } from "@/lib/hooks/use-payouts";
-import { formatUSDC, formatDate } from "@/lib/format";
+import { formatUSDC, formatUSD, formatDate } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
                   return (
                     <TableRow key={payout.id}>
                       <TableCell>{formatDate(payout.createdAt)}</TableCell>
-                      <TableCell className="font-mono">{formatUSDC(payout.amount)}</TableCell>
+                      <TableCell className="font-mono">{formatUSD(payout.amount)}</TableCell>
                       <TableCell>
                         <Badge variant={config.variant}>{payout.status}</Badge>
                       </TableCell>

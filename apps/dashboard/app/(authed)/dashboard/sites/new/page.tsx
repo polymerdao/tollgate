@@ -185,14 +185,14 @@ export default function NewSitePage() {
                   </p>
                   <div className="flex items-center gap-2">
                     <code className="flex-1 overflow-auto border border-border bg-muted/50 px-3 py-2 text-xs font-mono">
-                      _tollgate.{site.domain} TXT &quot;{site.verificationToken}&quot;
+                      _tollgate.{site.domain} TXT &quot;tollgate-verify={site.verificationToken}&quot;
                     </code>
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() =>
                         copyToClipboard(
-                          `_tollgate.${site.domain} TXT "${site.verificationToken}"`
+                          `_tollgate.${site.domain} TXT "tollgate-verify=${site.verificationToken}"`
                         )
                       }
                     >

@@ -92,8 +92,6 @@ payment.all("/*", async (c) => {
     return c.json({ error: "Unsupported chain" }, 400);
   }
 
-  await c.env.KV.delete(kvKey);
-
   const db = drizzle(c.env.DB);
   const existingPayment = await db.select({ id: payments.id }).from(payments).where(eq(payments.txHash, txHash)).get();
 
@@ -119,6 +117,9 @@ payment.all("/*", async (c) => {
     });
     return c.json({ error: verification.error ?? "Payment verification failed" }, 400);
   }
+
+  // Consume payment ID after successful verification (so bot can retry if RPC fails)
+  await c.env.KV.delete(kvKey);
 
   // 7. Record verified payment + increment balance
   await db.batch([
