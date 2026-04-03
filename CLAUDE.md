@@ -48,6 +48,7 @@ Cloudflare D1 (SQLite). Schema defined in `packages/shared/src/schema.ts`. Migra
 
 ## Gotchas
 
+- `NEXT_PUBLIC_*` env vars are inlined at build time by Next.js. Building the dashboard with `NEXT_PUBLIC_DEV_BYPASS_AUTH=true` in `.env.local` bakes the auth bypass into the production bundle. Set it to `false` before building for deploy.
 - IDE "Cannot find module" errors for workspace packages (`@tollgate/shared`, etc.) are false positives — `pnpm typecheck` is the source of truth.
 - Gateway and dashboard have separate `.wrangler/state` dirs — local D1 migrations must be applied to both (the setup script handles this).
 - Use `CREATE TABLE IF NOT EXISTS` and `INSERT OR IGNORE` in migrations for idempotency.
