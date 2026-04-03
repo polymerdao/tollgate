@@ -387,40 +387,85 @@ export default function NewSitePage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-foreground">2. Configure your CDN rules:</p>
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-foreground">2. Redirect bot traffic to your payment subdomain:</p>
               <Tabs defaultValue="cloudflare">
                 <TabsList>
                   <TabsTrigger value="cloudflare">Cloudflare</TabsTrigger>
                   <TabsTrigger value="vercel">Vercel</TabsTrigger>
                 </TabsList>
-                <TabsContent value="cloudflare">
-                  <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
-{`# WAF Rule: Redirect bots to payment subdomain
-# Action: 302 Redirect
-# When: Bot Score > 30
-# URL: https://pay.${siteDomain}\$\{http.request.uri\}
+                <TabsContent value="cloudflare" className="space-y-4 pt-2">
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">Option A: Snippets <span className="text-xs font-normal text-muted-foreground">(Pro / Business / Enterprise)</span></p>
+                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Go to <span className="font-medium text-foreground">Rules &rarr; Snippets</span> in your Cloudflare dashboard</li>
+                      <li>Create a new snippet and paste this code:</li>
+                    </ol>
+                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
+{`export default {
+  async fetch(request) {
+    const botUserAgents = [
+      "ChatGPT-User", "GPTBot", "PerplexityBot",
+      "anthropic-ai", "ClaudeBot", "Claude-Web",
+      "CCBot", "cohere-ai", "Bytespider",
+      "OAI-SearchBot", "meta-externalagent",
+      "Amazonbot", "YouBot", "Diffbot"
+    ];
 
-# Method B bypass (if using Secret Header):
-# WAF Exception Rule:
-# When: X-Obul-Secret header matches your secret
-# Action: Skip remaining rules`}
-                  </pre>
-                </TabsContent>
-                <TabsContent value="vercel">
-                  <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
-{`// vercel.json
-{
-  "redirects": [
-    {
-      "source": "/:path*",
-      "destination": "https://pay.${siteDomain}/:path*",
-      "statusCode": 302,
-      "has": [{ "type": "header", "key": "user-agent", "value": ".*bot.*" }]
+    const ua = request.headers.get("user-agent") || "";
+    const isBot = botUserAgents.some(bot =>
+      ua.toLowerCase().includes(bot.toLowerCase())
+    );
+
+    if (isBot) {
+      const url = new URL(request.url);
+      return Response.redirect(
+        \`https://pay.${siteDomain}\${url.pathname}\${url.search}\`,
+        302
+      );
     }
-  ]
-}`}
-                  </pre>
+
+    return fetch(request);
+  }
+};`}
+                    </pre>
+                    <ol start={3} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Set the snippet rule to <span className="font-medium text-foreground">All incoming requests</span> and deploy</li>
+                    </ol>
+                  </div>
+
+                  <div className="space-y-3 border-t border-border pt-4">
+                    <p className="text-sm font-medium">Option B: Workers <span className="text-xs font-normal text-muted-foreground">(All plans)</span></p>
+                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Go to <span className="font-medium text-foreground">Compute (Workers) &rarr; Workers &amp; Pages</span></li>
+                      <li>Create a new Worker with the same code above</li>
+                      <li>Go to your site &rarr; <span className="font-medium text-foreground">Worker Routes &rarr; Add route</span></li>
+                      <li>Set route: <code className="text-xs font-mono text-foreground">*.{siteDomain}/*</code> and assign your worker</li>
+                    </ol>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="vercel" className="space-y-4 pt-2">
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">WAF Rule</p>
+                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Go to your project &rarr; <span className="font-medium text-foreground">Security &rarr; Firewall &rarr; Custom Rules</span></li>
+                      <li>Create a new rule with condition: <span className="font-medium text-foreground">User Agent &rarr; Matches Expression</span></li>
+                      <li>Paste this regex pattern:</li>
+                    </ol>
+                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed break-all">
+{`(ChatGPT-User|PerplexityBot|GPTBot|anthropic-ai|CCBot|Claude-Web|ClaudeBot|cohere-ai|YouBot|Diffbot|OAI-SearchBot|meta-externalagent|Bytespider|Amazonbot)`}
+                    </pre>
+                    <ol start={4} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Set action to <span className="font-medium text-foreground">Redirect</span> with destination:</li>
+                    </ol>
+                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
+{`https://pay.${siteDomain}/$1`}
+                    </pre>
+                    <ol start={5} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                      <li>Save and deploy the rule</li>
+                    </ol>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
