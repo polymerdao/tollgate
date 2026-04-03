@@ -2,16 +2,37 @@ name = "tollgate-gateway"
 main = "src/index.ts"
 compatibility_date = "2025-12-01"
 compatibility_flags = ["nodejs_compat"]
+account_id = "4bfbcd216e0ba45b6384012c87f37584"
+
+# --- Mainnet (default) ---
 
 [[d1_databases]]
 binding = "DB"
 database_name = "tollgate"
-database_id = "TODO_REPLACE_WITH_ACTUAL_ID"
+database_id = "45456a7d-eff9-4a6b-8520-196323192975"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "TODO_REPLACE_WITH_ACTUAL_ID"
+id = "c2bc9ed9c41a434abdd4e36b2d8f219d"
 
 [vars]
-TOLLGATE_WALLET_ADDRESS = "0xTODO_REPLACE"
-BASE_RPC_URL = "https://mainnet.base.org"
+TOLLGATE_WALLET_ADDRESS = "0x2789e7E4acE2CEa71E2A490DA5B6144c534b194C"
+BASE_RPC_URL = "https://cosmological-cold-tree.base-mainnet.quiknode.pro/f25db024950cf24cf4bcbed408c30ecd9e579ca6/"
+
+# --- Testnet ---
+
+[env.testnet]
+name = "tollgate-gateway-testnet"
+
+[[env.testnet.d1_databases]]
+binding = "DB"
+database_name = "tollgate-testnet"
+database_id = "5da396fa-915e-479e-9695-e00b6b8a408e"
+
+[[env.testnet.kv_namespaces]]
+binding = "KV"
+id = "73221df321974ae39271bd45eef05ed0"
+
+[env.testnet.vars]
+TOLLGATE_WALLET_ADDRESS = "0x2789e7E4acE2CEa71E2A490DA5B6144c534b194C"
+BASE_RPC_URL = "https://radial-spring-replica.base-sepolia.quiknode.pro/0f7ad8a891e66d4fff9e4948167bc649f82b627b/"

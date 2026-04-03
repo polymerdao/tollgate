@@ -19,9 +19,38 @@ pnpm build           # Build all packages
 pnpm typecheck       # Type-check all packages
 ```
 
+## Deployment
+
+Cloudflare account: Polymer Labs (`4bfbcd216e0ba45b6384012c87f37584`). Two environments:
+
+| Env | Gateway | Dashboard |
+|-----|---------|-----------|
+| mainnet | `tollgate-gateway` | `tollgate-dashboard` |
+| testnet | `tollgate-gateway-testnet` | `tollgate-dashboard-testnet` |
+
+```bash
+# From apps/gateway or apps/dashboard:
+npx wrangler deploy              # Deploy mainnet
+npx wrangler deploy --env testnet # Deploy testnet
+
+# Dashboard requires build first:
+npx opennextjs-cloudflare build && npx wrangler deploy
+```
+
+- `pnpm deploy` does NOT work — it's a pnpm command, not the script. Use `npx wrangler deploy` directly.
+- Mainnet RPC: QuickNode Base Mainnet. Testnet RPC: QuickNode Base Sepolia.
+- D1 migrations (remote): `npx wrangler d1 execute tollgate --file=../../packages/shared/migrations/0000_initial.sql --remote`
+- D1 migrations (testnet remote): use `tollgate-testnet` instead of `tollgate`
+
 ## Database
 
-Cloudflare D1 (SQLite). Schema defined in `packages/shared/src/schema.ts`. Migrations in `packages/shared/migrations/`.
+Cloudflare D1 (SQLite). Schema defined in `packages/shared/src/schema.ts`. Migrations in `packages/shared/migrations/`. Local setup: `bash scripts/setup-local.sh` (applies migration + seed to both gateway and dashboard local D1).
+
+## Gotchas
+
+- IDE "Cannot find module" errors for workspace packages (`@tollgate/shared`, etc.) are false positives — `pnpm typecheck` is the source of truth.
+- Gateway and dashboard have separate `.wrangler/state` dirs — local D1 migrations must be applied to both (the setup script handles this).
+- Use `CREATE TABLE IF NOT EXISTS` and `INSERT OR IGNORE` in migrations for idempotency.
 
 ## Auth
 

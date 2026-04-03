@@ -2,15 +2,35 @@ name = "tollgate-dashboard"
 main = ".open-next/worker.js"
 compatibility_date = "2025-12-01"
 compatibility_flags = ["nodejs_compat"]
+account_id = "4bfbcd216e0ba45b6384012c87f37584"
 
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
 
+# --- Mainnet (default) ---
+
 [[d1_databases]]
 binding = "DB"
 database_name = "tollgate"
-database_id = "TODO_REPLACE_WITH_ACTUAL_ID"
+database_id = "45456a7d-eff9-4a6b-8520-196323192975"
 
 [triggers]
+crons = ["0 6 * * *"]
+
+# --- Testnet ---
+
+[env.testnet]
+name = "tollgate-dashboard-testnet"
+
+[env.testnet.assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[env.testnet.d1_databases]]
+binding = "DB"
+database_name = "tollgate-testnet"
+database_id = "5da396fa-915e-479e-9695-e00b6b8a408e"
+
+[env.testnet.triggers]
 crons = ["0 6 * * *"]
