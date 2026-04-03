@@ -144,17 +144,21 @@ export default function DashboardPage() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant={
-                        site.status === "active"
-                          ? "success"
-                          : site.status === "paused"
-                            ? "warning"
-                            : "danger"
-                      }
-                    >
-                      {site.status}
-                    </Badge>
+                    {!site.verifiedAt ? (
+                      <Badge variant="warning">pending verification</Badge>
+                    ) : (
+                      <Badge
+                        variant={
+                          site.status === "active"
+                            ? "success"
+                            : site.status === "paused"
+                              ? "warning"
+                              : "danger"
+                        }
+                      >
+                        {site.status}
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell className="font-mono text-sm">
                     {formatUSDC(site.balance)}
