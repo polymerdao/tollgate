@@ -18,10 +18,8 @@ const GATEWAY_HOSTS = [
 
 async function verifyCname(domain: string): Promise<{ verified: boolean; target?: string }> {
   const hostname = `pay.${domain}`;
-  const url = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=CNAME`;
-  const res = await fetch(url, {
-    headers: { Accept: "application/dns-json" },
-  });
+  const url = `https://dns.google/resolve?name=${encodeURIComponent(hostname)}&type=CNAME`;
+  const res = await fetch(url);
   if (!res.ok) return { verified: false };
 
   const data = (await res.json()) as { Answer?: { type: number; data: string }[] };

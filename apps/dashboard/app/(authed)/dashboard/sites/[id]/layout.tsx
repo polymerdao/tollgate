@@ -2,9 +2,9 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSite } from "@/lib/hooks/use-site";
-import { verifySiteDomain, verifyGateway } from "@/lib/api";
+import { verifySiteDomain, verifyGateway, deleteSite } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ export default function SiteDetailLayout({
   const { id } = use(params);
   const { data: site, isLoading } = useSite(id);
   const pathname = usePathname();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [verifying, setVerifying] = useState(false);
@@ -38,6 +39,8 @@ export default function SiteDetailLayout({
 
   const [gatewayVerifying, setGatewayVerifying] = useState(false);
   const [gatewayError, setGatewayError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const isUnverified = site && !site.verifiedAt;
   const needsGateway = site && site.verifiedAt && !site.gatewayConfigured;
@@ -76,6 +79,17 @@ export default function SiteDetailLayout({
       setGatewayError(e instanceof Error ? e.message : "CNAME verification failed. Please try again.");
     } finally {
       setGatewayVerifying(false);
+    }
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteSite(id);
+      queryClient.invalidateQueries({ queryKey: ["sites"] });
+      router.push("/dashboard/sites");
+    } catch {
+      setDeleting(false);
     }
   }
 
@@ -155,10 +169,22 @@ export default function SiteDetailLayout({
               <p className="text-sm text-amber-900 dark:text-amber-300">{verifyError}</p>
             )}
 
-            <Button onClick={handleVerify} disabled={verifying}>
-              {verifying && <Loader2 className="h-4 w-4 animate-spin" />}
-              Verify Domain
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={handleVerify} disabled={verifying}>
+                {verifying && <Loader2 className="h-4 w-4 animate-spin" />}
+                Verify Domain
+              </Button>
+              {!confirmDelete ? (
+                <Button variant="ghost" className="text-muted-foreground" onClick={() => setConfirmDelete(true)}>
+                  Delete Site
+                </Button>
+              ) : (
+                <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                  {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Confirm Delete
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -232,10 +258,22 @@ export default function SiteDetailLayout({
               <p className="text-sm text-amber-900 dark:text-amber-300">{gatewayError}</p>
             )}
 
-            <Button onClick={handleGatewayVerify} disabled={gatewayVerifying}>
-              {gatewayVerifying && <Loader2 className="h-4 w-4 animate-spin" />}
-              Verify CNAME
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button onClick={handleGatewayVerify} disabled={gatewayVerifying}>
+                {gatewayVerifying && <Loader2 className="h-4 w-4 animate-spin" />}
+                Verify CNAME
+              </Button>
+              {!confirmDelete ? (
+                <Button variant="ghost" className="text-muted-foreground" onClick={() => setConfirmDelete(true)}>
+                  Delete Site
+                </Button>
+              ) : (
+                <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                  {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Confirm Delete
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
       )}

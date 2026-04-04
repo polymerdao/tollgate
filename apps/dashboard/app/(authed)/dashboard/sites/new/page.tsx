@@ -35,6 +35,8 @@ export default function NewSitePage() {
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
 
+  const [gatewayVerified, setGatewayVerified] = useState(false);
+
   // Origin state
   const [originMethod, setOriginMethod] = useState("ip_allowlist");
   const [originUrl, setOriginUrl] = useState("");
@@ -487,14 +489,39 @@ export default function NewSitePage() {
               </Tabs>
             </div>
 
-            <Button
-              onClick={async () => {
-                if (site) await verifyGateway(site.id).catch(() => {});
-                router.push(`/dashboard/sites/${site?.id}/pricing`);
-              }}
-            >
-              Done
-            </Button>
+            {!gatewayVerified ? (
+              <div className="space-y-2">
+                <Button
+                  onClick={async () => {
+                    if (!site) return;
+                    setLoading(true);
+                    setError(null);
+                    try {
+                      await verifyGateway(site.id);
+                      setGatewayVerified(true);
+                    } catch (e) {
+                      setError(e instanceof Error ? e.message : "CNAME verification failed");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading}
+                >
+                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Verify CNAME
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-emerald-500">
+                  <CheckCircle className="h-5 w-5" />
+                  <span className="font-medium">CNAME verified!</span>
+                </div>
+                <Button onClick={() => router.push(`/dashboard/sites/${site?.id}/pricing`)}>
+                  Continue
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
