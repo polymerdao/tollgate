@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Copy, Loader2, CheckCircle } from "lucide-react";
 
 const tabs = [
+  { label: "Setup", segment: "setup" },
   { label: "Pricing", segment: "pricing" },
   { label: "Bots", segment: "bots" },
   { label: "Payouts", segment: "payouts" },

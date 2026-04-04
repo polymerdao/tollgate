@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   createSite,
@@ -355,170 +354,86 @@ export default function NewSitePage() {
         </Card>
       )}
 
-      {/* Step 4: CDN Template */}
+      {/* Step 4: Gateway CNAME */}
       {step === 3 && (
         <Card>
           <CardHeader>
-            <CardTitle>CDN Configuration</CardTitle>
+            <CardTitle>Gateway CNAME</CardTitle>
             <CardDescription>
-              Set up your CDN to redirect bot traffic to the Tollgate payment gateway.
+              Add a CNAME record so bot payments are routed through the Tollgate gateway.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-foreground">1. Add a CNAME record:</p>
-              <div className="overflow-hidden border border-border">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-muted/50">
-                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Type</th>
-                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Name</th>
-                      <th className="px-4 py-2 text-left font-medium text-muted-foreground">Target</th>
-                      <th className="w-12 px-2 py-2" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="px-4 py-3 font-mono text-xs">CNAME</td>
-                      <td className="px-4 py-3">
-                        <code className="text-xs font-mono">
-                          pay.{siteDomain}
-                        </code>
-                      </td>
-                      <td className="px-4 py-3">
-                        <code className="text-xs font-mono">
-                          {gatewayHost}
-                        </code>
-                      </td>
-                      <td className="px-2 py-3">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => copyToClipboard(gatewayHost)}
-                        >
-                          <Copy className="h-3.5 w-3.5" />
-                        </Button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-hidden border border-border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-4 py-2 text-left font-medium text-muted-foreground">Type</th>
+                    <th className="px-4 py-2 text-left font-medium text-muted-foreground">Name</th>
+                    <th className="px-4 py-2 text-left font-medium text-muted-foreground">Target</th>
+                    <th className="w-12 px-2 py-2" />
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="px-4 py-3 font-mono text-xs">CNAME</td>
+                    <td className="px-4 py-3">
+                      <code className="text-xs font-mono">
+                        pay.{siteDomain}
+                      </code>
+                    </td>
+                    <td className="px-4 py-3">
+                      <code className="text-xs font-mono">
+                        {gatewayHost}
+                      </code>
+                    </td>
+                    <td className="px-2 py-3">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => copyToClipboard(gatewayHost)}
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                      </Button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-foreground">2. Redirect bot traffic to your payment subdomain:</p>
-              <Tabs defaultValue="cloudflare">
-                <TabsList>
-                  <TabsTrigger value="cloudflare">Cloudflare</TabsTrigger>
-                  <TabsTrigger value="vercel">Vercel</TabsTrigger>
-                </TabsList>
-                <TabsContent value="cloudflare" className="space-y-4 pt-2">
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Option A: Snippets <span className="text-xs font-normal text-muted-foreground">(Pro / Business / Enterprise)</span></p>
-                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Go to <span className="font-medium text-foreground">Rules &rarr; Snippets</span> in your Cloudflare dashboard</li>
-                      <li>Create a new snippet and paste this code:</li>
-                    </ol>
-                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
-{`export default {
-  async fetch(request) {
-    const botUserAgents = [
-      "ChatGPT-User", "GPTBot", "PerplexityBot",
-      "anthropic-ai", "ClaudeBot", "Claude-Web",
-      "CCBot", "cohere-ai", "Bytespider",
-      "OAI-SearchBot", "meta-externalagent",
-      "Amazonbot", "YouBot", "Diffbot"
-    ];
-
-    const ua = request.headers.get("user-agent") || "";
-    const isBot = botUserAgents.some(bot =>
-      ua.toLowerCase().includes(bot.toLowerCase())
-    );
-
-    if (isBot) {
-      const url = new URL(request.url);
-      return Response.redirect(
-        \`https://pay.${siteDomain}\${url.pathname}\${url.search}\`,
-        302
-      );
-    }
-
-    return fetch(request);
-  }
-};`}
-                    </pre>
-                    <ol start={3} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Set the snippet rule to <span className="font-medium text-foreground">All incoming requests</span> and deploy</li>
-                    </ol>
-                  </div>
-
-                  <div className="space-y-3 border-t border-border pt-4">
-                    <p className="text-sm font-medium">Option B: Workers <span className="text-xs font-normal text-muted-foreground">(All plans)</span></p>
-                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Go to <span className="font-medium text-foreground">Compute (Workers) &rarr; Workers &amp; Pages</span></li>
-                      <li>Create a new Worker with the same code above</li>
-                      <li>Go to your site &rarr; <span className="font-medium text-foreground">Worker Routes &rarr; Add route</span></li>
-                      <li>Set route: <code className="text-xs font-mono text-foreground">*.{siteDomain}/*</code> and assign your worker</li>
-                    </ol>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="vercel" className="space-y-4 pt-2">
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">WAF Rule</p>
-                    <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Go to your project &rarr; <span className="font-medium text-foreground">Security &rarr; Firewall &rarr; Custom Rules</span></li>
-                      <li>Create a new rule with condition: <span className="font-medium text-foreground">User Agent &rarr; Matches Expression</span></li>
-                      <li>Paste this regex pattern:</li>
-                    </ol>
-                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed break-all">
-{`(ChatGPT-User|PerplexityBot|GPTBot|anthropic-ai|CCBot|Claude-Web|ClaudeBot|cohere-ai|YouBot|Diffbot|OAI-SearchBot|meta-externalagent|Bytespider|Amazonbot)`}
-                    </pre>
-                    <ol start={4} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Set action to <span className="font-medium text-foreground">Redirect</span> with destination:</li>
-                    </ol>
-                    <pre className="overflow-auto border border-border bg-muted/50 p-4 text-xs font-mono leading-relaxed">
-{`https://pay.${siteDomain}/$1`}
-                    </pre>
-                    <ol start={5} className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-                      <li>Save and deploy the rule</li>
-                    </ol>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </div>
+            <p className="text-xs text-muted-foreground">
+              DNS changes can take a few minutes to propagate.
+            </p>
 
             {!gatewayVerified ? (
-              <div className="space-y-2">
-                <Button
-                  onClick={async () => {
-                    if (!site) return;
-                    setLoading(true);
-                    setError(null);
-                    try {
-                      await verifyGateway(site.id);
-                      setGatewayVerified(true);
-                    } catch (e) {
-                      setError(e instanceof Error ? e.message : "CNAME verification failed");
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={loading}
-                >
-                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Verify CNAME
-                </Button>
-              </div>
+              <Button
+                onClick={async () => {
+                  if (!site) return;
+                  setLoading(true);
+                  setError(null);
+                  try {
+                    await verifyGateway(site.id);
+                    setGatewayVerified(true);
+                  } catch (e) {
+                    setError(e instanceof Error ? e.message : "CNAME verification failed");
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={loading}
+              >
+                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                Verify CNAME
+              </Button>
             ) : (
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 text-emerald-500">
                   <CheckCircle className="h-5 w-5" />
                   <span className="font-medium">CNAME verified!</span>
                 </div>
-                <Button onClick={() => router.push(`/dashboard/sites/${site?.id}/pricing`)}>
-                  Continue
+                <Button onClick={() => router.push(`/dashboard/sites/${site?.id}/setup`)}>
+                  Continue to Setup
                 </Button>
               </div>
             )}
