@@ -1,6 +1,19 @@
 import { Hono } from "hono";
 
-const app = new Hono();
+type Bindings = {
+  ORIGIN_SECRET: string;
+};
+
+const app = new Hono<{ Bindings: Bindings }>();
+
+// Verify secret header on /api/* routes
+app.use("/api/*", async (c, next) => {
+  const secret = c.req.header("X-Obul-Secret");
+  if (secret !== c.env.ORIGIN_SECRET) {
+    return c.json({ error: "Unauthorized" }, 403);
+  }
+  return next();
+});
 
 // Landing page
 app.get("/", (c) => {

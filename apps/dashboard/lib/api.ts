@@ -113,6 +113,12 @@ export function initiateStripeConnect(id: string) {
   });
 }
 
+export function verifyGateway(id: string) {
+  return apiFetch<{ verified: boolean; target?: string }>(`/api/v1/sites/${id}/gateway-configured`, {
+    method: "POST",
+  });
+}
+
 export function updateSiteStatus(id: string, status: "active" | "paused") {
   return apiFetch<Site>(`/api/v1/sites/${id}/status`, {
     method: "PUT",

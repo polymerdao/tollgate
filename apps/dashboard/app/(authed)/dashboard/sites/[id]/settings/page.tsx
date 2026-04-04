@@ -23,7 +23,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Copy, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { Loader2, Copy, Eye, EyeOff } from "lucide-react";
 
 const methodLabels: Record<string, string> = {
   ip_allowlist: "IP Allowlist",

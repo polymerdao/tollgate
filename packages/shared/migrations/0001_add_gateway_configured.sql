@@ -1,0 +1,1 @@
+ALTER TABLE sites ADD COLUMN gateway_configured INTEGER NOT NULL DEFAULT 0;

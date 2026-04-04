@@ -19,6 +19,7 @@ import {
   verifySiteDomain,
   initiateStripeConnect,
   updateOrigin,
+  verifyGateway,
 } from "@/lib/api";
 import type { Site } from "@tollgate/shared";
 import { CheckCircle, Loader2, AlertCircle, Copy } from "lucide-react";
@@ -112,6 +113,10 @@ export default function NewSitePage() {
   }
 
   const siteDomain = site?.domain ?? domain;
+  const isTestnet = typeof window !== "undefined" && window.location.hostname.includes("testnet");
+  const gatewayHost = isTestnet
+    ? "tollgate-gateway-testnet.operations-4bf.workers.dev"
+    : "gw.obul.ai";
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -380,7 +385,7 @@ export default function NewSitePage() {
                       </td>
                       <td className="px-4 py-3">
                         <code className="text-xs font-mono">
-                          gw.obul.ai
+                          {gatewayHost}
                         </code>
                       </td>
                       <td className="px-2 py-3">
@@ -388,7 +393,7 @@ export default function NewSitePage() {
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => copyToClipboard("gw.obul.ai")}
+                          onClick={() => copyToClipboard(gatewayHost)}
                         >
                           <Copy className="h-3.5 w-3.5" />
                         </Button>
@@ -483,9 +488,10 @@ export default function NewSitePage() {
             </div>
 
             <Button
-              onClick={() =>
-                router.push(`/dashboard/sites/${site?.id}/pricing`)
-              }
+              onClick={async () => {
+                if (site) await verifyGateway(site.id).catch(() => {});
+                router.push(`/dashboard/sites/${site?.id}/pricing`);
+              }}
             >
               Done
             </Button>

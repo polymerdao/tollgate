@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
     originSecret: null,
     originSecretPrev: null,
     originSecretPrevExpiresAt: null,
+    gatewayConfigured: false,
     network: "base",
     createdAt: now,
     updatedAt: now,

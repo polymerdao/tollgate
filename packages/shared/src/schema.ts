@@ -16,6 +16,7 @@ export const sites = sqliteTable("sites", {
   originSecret: text("origin_secret"),
   originSecretPrev: text("origin_secret_prev"),
   originSecretPrevExpiresAt: text("origin_secret_prev_expires_at"),
+  gatewayConfigured: integer("gateway_configured", { mode: "boolean" }).notNull().default(false),
   network: text("network").notNull().default("base"),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
