@@ -93,7 +93,7 @@ server {
       {/* Cloudflare */}
       <Card className={expanded === "cloudflare" ? "border-primary/30" : ""}>
         <CardHeader
-          className="cursor-pointer select-none"
+          className="mb-0 cursor-pointer select-none"
           onClick={() => setExpanded(expanded === "cloudflare" ? null : "cloudflare")}
         >
           <div className="flex items-center justify-between">
@@ -173,7 +173,7 @@ server {
       {/* Vercel */}
       <Card className={expanded === "vercel" ? "border-primary/30" : ""}>
         <CardHeader
-          className="cursor-pointer select-none"
+          className="mb-0 cursor-pointer select-none"
           onClick={() => setExpanded(expanded === "vercel" ? null : "vercel")}
         >
           <div className="flex items-center justify-between">
@@ -231,7 +231,7 @@ server {
       {/* Nginx */}
       <Card className={expanded === "nginx" ? "border-primary/30" : ""}>
         <CardHeader
-          className="cursor-pointer select-none"
+          className="mb-0 cursor-pointer select-none"
           onClick={() => setExpanded(expanded === "nginx" ? null : "nginx")}
         >
           <div className="flex items-center justify-between">
