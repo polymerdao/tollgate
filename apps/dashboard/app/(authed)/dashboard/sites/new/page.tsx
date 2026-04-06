@@ -12,18 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
   createSite,
   verifySiteDomain,
-  initiateStripeConnect,
   updateOrigin,
   verifyGateway,
 } from "@/lib/api";
 import type { Site } from "@tollgate/shared";
 import { CheckCircle, Loader2, AlertCircle, Copy } from "lucide-react";
 
-const STEPS = ["Domain", "Stripe", "Origin", "CDN Setup"] as const;
+const STEPS = ["Domain", "Origin", "CDN Setup"] as const;
 
 export default function NewSitePage() {
   const router = useRouter();
@@ -72,25 +70,6 @@ export default function NewSitePage() {
     }
   }
 
-  async function handleStripeConnect() {
-    if (!site) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const { url } = await initiateStripeConnect(site.id);
-      if (url && url !== "#") {
-        window.location.href = url;
-      } else {
-        // MVP placeholder — move to next step
-        setStep(2);
-      }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to connect Stripe");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function handleSaveOrigin() {
     if (!site) return;
     setLoading(true);
@@ -101,7 +80,7 @@ export default function NewSitePage() {
         originUrl: originMethod === "backend_api" ? originUrl : undefined,
         originSecret: originMethod === "secret_header" ? originSecret : undefined,
       });
-      setStep(3);
+      setStep(2);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to save origin");
     } finally {
@@ -257,7 +236,7 @@ export default function NewSitePage() {
                 <CheckCircle className="h-5 w-5" />
                 <span className="font-medium">Domain verified!</span>
                 <Button className="ml-auto" onClick={() => setStep(1)}>
-                  Continue
+                  Continue to Origin Setup
                 </Button>
               </div>
             )}
@@ -265,34 +244,8 @@ export default function NewSitePage() {
         </Card>
       )}
 
-      {/* Step 2: Stripe */}
+      {/* Step 2: Origin Method */}
       {step === 1 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Connect Stripe</CardTitle>
-            <CardDescription>
-              Connect your Stripe account to receive payouts from bot payments.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="border border-amber-600/30 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:bg-amber-500/10 dark:text-amber-300">
-              Stripe Connect setup will be available soon. You can skip this step for now and configure it later in Settings.
-            </div>
-            <div className="flex gap-3">
-              <Button onClick={handleStripeConnect} disabled={loading}>
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Connect Stripe Account
-              </Button>
-              <Button variant="outline" onClick={() => setStep(2)}>
-                Skip for Now
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Step 3: Origin Method */}
-      {step === 2 && (
         <Card>
           <CardHeader>
             <CardTitle>Origin Configuration</CardTitle>
@@ -354,8 +307,8 @@ export default function NewSitePage() {
         </Card>
       )}
 
-      {/* Step 4: Gateway CNAME */}
-      {step === 3 && (
+      {/* Step 3: Gateway CNAME */}
+      {step === 2 && (
         <Card>
           <CardHeader>
             <CardTitle>Gateway CNAME</CardTitle>

@@ -9,8 +9,10 @@ export async function verifyPayment(
   txHash: Hex,
   expectedRecipient: string,
   expectedAmountMinor: number,
-  rpcUrl?: string
+  rpcUrl?: string,
+  usdcAddress?: string
 ): Promise<VerificationResult> {
+  const usdcContract = usdcAddress ?? USDC_ADDRESS_BASE;
   const client = createPublicClient({
     chain: base,
     transport: http(rpcUrl),
@@ -37,7 +39,7 @@ export async function verifyPayment(
 
   // Find USDC Transfer event to the expected recipient
   for (const log of receipt.logs) {
-    if (log.address.toLowerCase() !== USDC_ADDRESS_BASE.toLowerCase()) continue;
+    if (log.address.toLowerCase() !== usdcContract.toLowerCase()) continue;
 
     try {
       const decoded = decodeEventLog({

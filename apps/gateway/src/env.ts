@@ -3,4 +3,5 @@ export interface Env {
   KV: KVNamespace;
   TOLLGATE_WALLET_ADDRESS: string;
   BASE_RPC_URL: string;
+  USDC_ADDRESS: string;
 }

@@ -103,7 +103,8 @@ payment.all("/*", async (c) => {
     txHash as `0x${string}`,
     c.env.TOLLGATE_WALLET_ADDRESS,
     paymentData.price,
-    c.env.BASE_RPC_URL
+    c.env.BASE_RPC_URL,
+    c.env.USDC_ADDRESS
   );
 
   const now = new Date().toISOString();

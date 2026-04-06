@@ -19,6 +19,7 @@ id = "c2bc9ed9c41a434abdd4e36b2d8f219d"
 [vars]
 TOLLGATE_WALLET_ADDRESS = "0x2789e7E4acE2CEa71E2A490DA5B6144c534b194C"
 BASE_RPC_URL = "https://cosmological-cold-tree.base-mainnet.quiknode.pro/f25db024950cf24cf4bcbed408c30ecd9e579ca6/"
+USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 
 # --- Testnet ---
 
@@ -37,3 +38,4 @@ id = "73221df321974ae39271bd45eef05ed0"
 [env.testnet.vars]
 TOLLGATE_WALLET_ADDRESS = "0x2789e7E4acE2CEa71E2A490DA5B6144c534b194C"
 BASE_RPC_URL = "https://radial-spring-replica.base-sepolia.quiknode.pro/0f7ad8a891e66d4fff9e4948167bc649f82b627b/"
+USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
