@@ -18,9 +18,6 @@ database_id = "45456a7d-eff9-4a6b-8520-196323192975"
 [vars]
 GOOGLE_CLIENT_ID = "989844410974-tkf90d3ljcritktvoh961agh045r1q56.apps.googleusercontent.com"
 
-[triggers]
-crons = ["0 6 * * *"]
-
 # --- Testnet ---
 
 [env.testnet]
@@ -38,5 +35,3 @@ database_id = "5da396fa-915e-479e-9695-e00b6b8a408e"
 [env.testnet.vars]
 GOOGLE_CLIENT_ID = "989844410974-tkf90d3ljcritktvoh961agh045r1q56.apps.googleusercontent.com"
 
-[env.testnet.triggers]
-crons = ["0 6 * * *"]
