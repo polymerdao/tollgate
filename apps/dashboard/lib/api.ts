@@ -13,6 +13,7 @@ export interface SiteWithBalance extends Site {
   balance: number;
   allowlist?: string[];
   exclusions?: string[];
+  pathPricing?: { pattern: string; price: number }[];
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -87,6 +88,16 @@ export function updateAllowlist(
   entries: { userAgentPattern: string }[]
 ) {
   return apiFetch<{ ok: true }>(`/api/v1/sites/${id}/allowlist`, {
+    method: "PUT",
+    body: JSON.stringify({ entries }),
+  });
+}
+
+export function updatePathPricing(
+  id: string,
+  entries: { pattern: string; price: number }[]
+) {
+  return apiFetch<{ ok: true }>(`/api/v1/sites/${id}/path-pricing`, {
     method: "PUT",
     body: JSON.stringify({ entries }),
   });

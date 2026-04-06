@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
-import { sites, botAllowlist, pathExclusions, SITE_CACHE_TTL_S } from "@tollgate/shared";
+import { sites, botAllowlist, pathExclusions, pathPricing, SITE_CACHE_TTL_S } from "@tollgate/shared";
 import type { Env } from "../env";
 
 export interface SiteConfig {
@@ -17,6 +17,7 @@ export interface SiteConfig {
   network: string;
   allowlistPatterns: string[];
   exclusionPatterns: string[];
+  pathPricingRules: { pattern: string; price: number }[];
 }
 
 export async function getSiteConfig(
@@ -33,6 +34,7 @@ export async function getSiteConfig(
 
   const allowlist = await db.select().from(botAllowlist).where(eq(botAllowlist.siteId, site.id)).all();
   const exclusions = await db.select().from(pathExclusions).where(eq(pathExclusions.siteId, site.id)).all();
+  const pricingRules = await db.select().from(pathPricing).where(eq(pathPricing.siteId, site.id)).all();
 
   const config: SiteConfig = {
     id: site.id,
@@ -48,6 +50,7 @@ export async function getSiteConfig(
     network: site.network,
     allowlistPatterns: allowlist.map((a) => a.userAgentPattern),
     exclusionPatterns: exclusions.map((e) => e.pattern),
+    pathPricingRules: pricingRules.map((r) => ({ pattern: r.pattern, price: r.price })),
   };
 
   await env.KV.put(cacheKey, JSON.stringify(config), { expirationTtl: SITE_CACHE_TTL_S });

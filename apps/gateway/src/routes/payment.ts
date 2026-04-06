@@ -9,6 +9,7 @@ import { getSiteConfig } from "../services/site-config";
 import { isPathExcluded, isBotAllowlisted } from "../middleware/bot-rules";
 import { isRateLimited } from "../middleware/rate-limit";
 import { fetchOriginContent } from "../services/origin";
+import { resolvePrice } from "../services/price-resolver";
 
 const payment = new Hono<{ Bindings: Env }>();
 
@@ -54,17 +55,18 @@ payment.all("/*", async (c) => {
   const chainHeader = c.req.header("x-payment-chain");
 
   if (!txHash || !paymentIdHeader) {
+    const price = resolvePrice(path, config);
     const paymentId = ulid();
     const expiresAt = new Date(Date.now() + PAYMENT_ID_TTL_MS).toISOString();
 
     await c.env.KV.put(
       `payment:${paymentId}`,
-      JSON.stringify({ siteId: config.id, price: config.defaultPrice, path }),
+      JSON.stringify({ siteId: config.id, price, path }),
       { expirationTtl: PAYMENT_ID_TTL_MS / 1000 }
     );
 
     return c.json({
-      price: (config.defaultPrice / 1_000_000).toString(),
+      price: (price / 1_000_000).toString(),
       currency: "USDC",
       network: config.network,
       recipientAddress: c.env.TOLLGATE_WALLET_ADDRESS,

@@ -34,6 +34,14 @@ export const pathExclusions = sqliteTable("path_exclusions", {
   pattern: text("pattern").notNull(),
 });
 
+export const pathPricing = sqliteTable("path_pricing", {
+  id: text("id").primaryKey(),
+  siteId: text("site_id").notNull().references(() => sites.id, { onDelete: "cascade" }),
+  pattern: text("pattern").notNull(),
+  price: integer("price").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
 export const payments = sqliteTable("payments", {
   id: text("id").primaryKey(),
   siteId: text("site_id").notNull().references(() => sites.id),

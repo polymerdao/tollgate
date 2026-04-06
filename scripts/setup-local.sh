@@ -5,17 +5,20 @@
 set -e
 
 MIGRATION="../../packages/shared/migrations/0000_initial.sql"
+MIGRATION_PATH_PRICING="../../packages/shared/migrations/0002_add_path_pricing.sql"
 SEED="../../packages/shared/migrations/seed-local.sql"
 
 echo "==> Applying D1 migration (gateway)..."
 cd apps/gateway
 npx wrangler d1 execute tollgate --file=$MIGRATION --local
+npx wrangler d1 execute tollgate --file=$MIGRATION_PATH_PRICING --local
 cd ../..
 
 echo ""
 echo "==> Applying D1 migration (dashboard)..."
 cd apps/dashboard
 npx wrangler d1 execute tollgate --file=$MIGRATION --local
+npx wrangler d1 execute tollgate --file=$MIGRATION_PATH_PRICING --local
 cd ../..
 
 echo ""

@@ -1,9 +1,10 @@
 import type { InferSelectModel } from "drizzle-orm";
-import type { sites, botAllowlist, pathExclusions, payments, balances, payouts } from "./schema";
+import type { sites, botAllowlist, pathExclusions, pathPricing, payments, balances, payouts } from "./schema";
 
 export type Site = InferSelectModel<typeof sites>;
 export type BotAllowlistEntry = InferSelectModel<typeof botAllowlist>;
 export type PathExclusion = InferSelectModel<typeof pathExclusions>;
+export type PathPricingRule = InferSelectModel<typeof pathPricing>;
 export type Payment = InferSelectModel<typeof payments>;
 export type Balance = InferSelectModel<typeof balances>;
 export type Payout = InferSelectModel<typeof payouts>;

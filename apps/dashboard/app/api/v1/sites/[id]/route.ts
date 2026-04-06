@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import { eq } from "drizzle-orm";
-import { sites, balances, botAllowlist, pathExclusions } from "@tollgate/shared";
+import { sites, balances, botAllowlist, pathExclusions, pathPricing } from "@tollgate/shared";
 import {
   getAccountId,
   verifySiteOwnership,
@@ -48,11 +48,18 @@ export async function GET(
     .where(eq(pathExclusions.siteId, id))
     .all();
 
+  const pricingRules = await db
+    .select()
+    .from(pathPricing)
+    .where(eq(pathPricing.siteId, id))
+    .all();
+
   return NextResponse.json({
     ...row.sites,
     balance: row.balances?.amount ?? 0,
     allowlist: allowlist.map((a) => a.userAgentPattern),
     exclusions: exclusions.map((e) => e.pattern),
+    pathPricing: pricingRules.map((r) => ({ pattern: r.pattern, price: r.price })),
   });
 }
 

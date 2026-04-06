@@ -43,3 +43,17 @@ export const updateExclusionsSchema = z.object({
     })
   ),
 });
+
+const safeGlobPattern = (val: string) => {
+  if (!val.startsWith("/")) return false;
+  return /^[a-zA-Z0-9/_.*-]+$/.test(val);
+};
+
+export const updatePathPricingSchema = z.object({
+  entries: z.array(
+    z.object({
+      pattern: z.string().min(1).max(256).refine(safeGlobPattern, "Pattern must start with / and use * for wildcards"),
+      price: z.number().int().min(1, "Price must be at least 1 minor unit"),
+    })
+  ).max(50, "Maximum 50 path pricing rules"),
+});
