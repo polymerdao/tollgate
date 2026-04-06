@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut, Puzzle } from "lucide-react";
+import { LayoutDashboard, LogOut, Puzzle, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/lib/auth-client";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/payouts", label: "Payouts", icon: Wallet },
   { href: "/dashboard/integrations", label: "Integrations", icon: Puzzle },
 ];
 
