@@ -18,7 +18,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import { WalletConnectButton } from "@/components/dashboard/wallet-connect-button";
+import { WalletConnectButton, useWalletConnected } from "@/components/dashboard/wallet-connect-button";
 import { CheckCircle, XCircle, Clock, DollarSign, Wallet } from "lucide-react";
 
 const statusConfig = {
@@ -35,6 +35,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
   const [connecting, setConnecting] = useState(false);
   const [payingOut, setPayingOut] = useState(false);
   const [savingWallet, setSavingWallet] = useState(false);
+  const walletConnected = useWalletConnected();
   const queryClient = useQueryClient();
   const isLoading = siteLoading || payoutsLoading;
 
@@ -55,7 +56,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
       await fetch(`/api/v1/sites/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payoutWalletAddress: address }),
+        body: JSON.stringify({ payoutWalletAddress: address || null }),
       });
       await queryClient.invalidateQueries({ queryKey: ["site", id] });
     } finally {
@@ -118,28 +119,38 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
           </span>
 
           {site?.stripeAccountId ? (
-            <span className="flex items-center gap-2 text-emerald-500">
-              <CheckCircle className="h-4 w-4" />
-              <DollarSign className="h-4 w-4" />
-              <span className="font-semibold">Stripe Connected</span>
-            </span>
-          ) : site?.payoutWalletAddress ? (
-            <span className="flex items-center gap-2 text-emerald-500">
-              <CheckCircle className="h-4 w-4" />
-              <Wallet className="h-4 w-4" />
-              <span className="font-mono text-sm font-semibold">
-                {site.payoutWalletAddress.slice(0, 6)}…{site.payoutWalletAddress.slice(-4)}
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2 text-emerald-500">
+                <CheckCircle className="h-4 w-4" />
+                <DollarSign className="h-4 w-4" />
+                <span className="font-semibold">Stripe Connected</span>
               </span>
-            </span>
+              <Button size="sm" variant="ghost" onClick={connectStripe} disabled={connecting}>
+                {connecting ? "Redirecting..." : "Change"}
+              </Button>
+            </div>
+          ) : site?.payoutWalletAddress ? (
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2 text-emerald-500">
+                <CheckCircle className="h-4 w-4" />
+                <Wallet className="h-4 w-4" />
+                <span className="font-mono text-sm font-semibold">
+                  {site.payoutWalletAddress.slice(0, 6)}…{site.payoutWalletAddress.slice(-4)}
+                </span>
+              </span>
+              <Button size="sm" variant="ghost" onClick={() => saveWallet("")}>
+                Change
+              </Button>
+            </div>
           ) : (
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              {!walletConnected && (
                 <Button size="sm" variant="outline" onClick={connectStripe} disabled={connecting}>
                   <DollarSign className="h-4 w-4" />
                   {connecting ? "Connecting..." : "Connect Stripe"}
                 </Button>
-                <WalletConnectButton onAddressSelected={saveWallet} saving={savingWallet} />
-              </div>
+              )}
+              <WalletConnectButton onAddressSelected={saveWallet} saving={savingWallet} />
             </div>
           )}
         </Card>

@@ -11,14 +11,22 @@ export async function signOut(): Promise<void> {
   await fetch("/api/auth/logout", { method: "POST" });
 }
 
+const DEV_BYPASS = process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "true";
+const DEV_SESSION: SessionState = {
+  data: { user: { email: "dev-account-001", name: "Dev User", image: null }, raw: {} },
+  isPending: false,
+  error: null,
+};
+
 export function useSession(): SessionState {
   const [state, setState] = useState<SessionState>({
     data: null,
-    isPending: true,
+    isPending: !DEV_BYPASS,
     error: null,
   });
 
   useEffect(() => {
+    if (DEV_BYPASS) return;
     let active = true;
 
     const loadSession = async () => {
@@ -56,5 +64,5 @@ export function useSession(): SessionState {
     };
   }, []);
 
-  return state;
+  return DEV_BYPASS ? DEV_SESSION : state;
 }

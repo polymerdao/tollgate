@@ -3,11 +3,16 @@
 import { useAccount, useDisconnect } from "wagmi";
 import { ConnectKitButton } from "connectkit";
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
+import { Wallet, CheckCircle } from "lucide-react";
 
 interface Props {
   onAddressSelected: (address: string) => void;
   saving: boolean;
+}
+
+export function useWalletConnected() {
+  const { isConnected } = useAccount();
+  return isConnected;
 }
 
 export function WalletConnectButton({ onAddressSelected, saving }: Props) {
@@ -16,20 +21,20 @@ export function WalletConnectButton({ onAddressSelected, saving }: Props) {
 
   if (isConnected && address) {
     return (
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-sm text-muted-foreground">
-          {address.slice(0, 6)}…{address.slice(-4)}
-        </span>
-        <Button
-          size="sm"
-          onClick={() => onAddressSelected(address)}
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Use this address"}
-        </Button>
-        <Button size="sm" variant="ghost" onClick={() => disconnect()}>
-          Cancel
-        </Button>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2">
+          <Wallet className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="font-mono text-sm flex-1 truncate">{address}</span>
+          <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" onClick={() => onAddressSelected(address)} disabled={saving}>
+            {saving ? "Saving..." : "Use this address"}
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => disconnect()}>
+            Cancel
+          </Button>
+        </div>
       </div>
     );
   }
@@ -37,7 +42,7 @@ export function WalletConnectButton({ onAddressSelected, saving }: Props) {
   return (
     <ConnectKitButton.Custom>
       {({ show }) => (
-        <Button size="sm" variant="outline" onClick={show}>
+        <Button size="sm" variant="outline" className="w-fit" onClick={show}>
           <Wallet className="h-4 w-4" />
           Connect Wallet
         </Button>
