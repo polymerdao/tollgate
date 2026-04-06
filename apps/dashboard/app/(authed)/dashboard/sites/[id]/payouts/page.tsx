@@ -34,7 +34,6 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
 
   const [connecting, setConnecting] = useState(false);
   const [payingOut, setPayingOut] = useState(false);
-  const [savingWallet, setSavingWallet] = useState(false);
   const walletConnected = useWalletConnected();
   const queryClient = useQueryClient();
   const isLoading = siteLoading || payoutsLoading;
@@ -51,17 +50,12 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
   }
 
   async function saveWallet(address: string) {
-    setSavingWallet(true);
-    try {
-      await fetch(`/api/v1/sites/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payoutWalletAddress: address || null }),
-      });
-      await queryClient.invalidateQueries({ queryKey: ["site", id] });
-    } finally {
-      setSavingWallet(false);
-    }
+    await fetch(`/api/v1/sites/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ payoutWalletAddress: address || null }),
+    });
+    await queryClient.invalidateQueries({ queryKey: ["site", id] });
   }
 
   async function requestPayout() {
@@ -150,7 +144,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
                   {connecting ? "Connecting..." : "Connect Stripe"}
                 </Button>
               )}
-              <WalletConnectButton onAddressSelected={saveWallet} saving={savingWallet} />
+              <WalletConnectButton onAddressSelected={saveWallet} onDisconnect={() => saveWallet("")} />
             </div>
           )}
         </Card>
