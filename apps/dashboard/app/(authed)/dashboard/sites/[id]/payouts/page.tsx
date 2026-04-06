@@ -18,7 +18,8 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { WalletConnectButton } from "@/components/dashboard/wallet-connect-button";
+import { CheckCircle, XCircle, Clock, DollarSign, Wallet } from "lucide-react";
 
 const statusConfig = {
   completed: { variant: "success" as const, icon: CheckCircle },
@@ -33,6 +34,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
 
   const [connecting, setConnecting] = useState(false);
   const [payingOut, setPayingOut] = useState(false);
+  const [savingWallet, setSavingWallet] = useState(false);
   const queryClient = useQueryClient();
   const isLoading = siteLoading || payoutsLoading;
 
@@ -44,6 +46,20 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
       if (data.url) window.location.href = data.url;
     } finally {
       setConnecting(false);
+    }
+  }
+
+  async function saveWallet(address: string) {
+    setSavingWallet(true);
+    try {
+      await fetch(`/api/v1/sites/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payoutWalletAddress: address }),
+      });
+      await queryClient.invalidateQueries({ queryKey: ["site", id] });
+    } finally {
+      setSavingWallet(false);
     }
   }
 
@@ -75,6 +91,8 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
     );
   }
 
+  const hasPayoutMethod = !!(site?.stripeAccountId || site?.payoutWalletAddress);
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -86,28 +104,42 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
             <span className="text-2xl font-bold text-foreground">
               {site ? formatUSDC(site.balance) : "--"}
             </span>
-            {site?.stripeAccountId && (
+            {hasPayoutMethod && (
               <Button size="sm" variant="outline" onClick={requestPayout} disabled={payingOut}>
                 {payingOut ? "Processing..." : "Request Payout"}
               </Button>
             )}
           </div>
         </Card>
-        <Card className="flex flex-col gap-1 p-5">
+
+        <Card className="flex flex-col gap-2 p-5">
           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Stripe Status
+            Payout Method
           </span>
+
           {site?.stripeAccountId ? (
             <span className="flex items-center gap-2 text-emerald-500">
-              <CheckCircle className="h-5 w-5" />
-              <span className="text-lg font-bold">Connected</span>
+              <CheckCircle className="h-4 w-4" />
+              <DollarSign className="h-4 w-4" />
+              <span className="font-semibold">Stripe Connected</span>
+            </span>
+          ) : site?.payoutWalletAddress ? (
+            <span className="flex items-center gap-2 text-emerald-500">
+              <CheckCircle className="h-4 w-4" />
+              <Wallet className="h-4 w-4" />
+              <span className="font-mono text-sm font-semibold">
+                {site.payoutWalletAddress.slice(0, 6)}…{site.payoutWalletAddress.slice(-4)}
+              </span>
             </span>
           ) : (
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-bold text-muted-foreground">Not Connected</span>
-              <Button size="sm" variant="outline" onClick={connectStripe} disabled={connecting}>
-                {connecting ? "Connecting..." : "Connect Stripe"}
-              </Button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={connectStripe} disabled={connecting}>
+                  <DollarSign className="h-4 w-4" />
+                  {connecting ? "Connecting..." : "Connect Stripe"}
+                </Button>
+                <WalletConnectButton onAddressSelected={saveWallet} saving={savingWallet} />
+              </div>
             </div>
           )}
         </Card>
@@ -116,7 +148,7 @@ export default function PayoutsPage({ params }: { params: Promise<{ id: string }
       <Card>
         <CardHeader>
           <CardTitle>Payout History</CardTitle>
-          <CardDescription>Record of all payouts to your Stripe account.</CardDescription>
+          <CardDescription>Record of all payouts to your account.</CardDescription>
         </CardHeader>
         <CardContent>
           {!payouts || payouts.length === 0 ? (

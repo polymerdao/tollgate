@@ -63,6 +63,30 @@ export async function GET(
   });
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const accountId = await getAccountId(request);
+  if (!accountId) return unauthorized();
+
+  const { id } = await params;
+  const { env } = await getCloudflareContext();
+  const db = drizzle(env.DB);
+
+  if (!(await verifySiteOwnership(accountId, id, db))) return forbidden();
+
+  const body = await request.json();
+  const { payoutWalletAddress } = body;
+
+  await db
+    .update(sites)
+    .set({ payoutWalletAddress: payoutWalletAddress ?? null, updatedAt: new Date().toISOString() })
+    .where(eq(sites.id, id));
+
+  return NextResponse.json({ ok: true });
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

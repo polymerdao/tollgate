@@ -8,6 +8,7 @@ export const sites = sqliteTable("sites", {
   verificationToken: text("verification_token").notNull(),
   verifiedAt: text("verified_at"),
   stripeAccountId: text("stripe_account_id"),
+  payoutWalletAddress: text("payout_wallet_address"),
   defaultPrice: integer("default_price").notNull(),
   originMethod: text("origin_method", {
     enum: ["ip_allowlist", "secret_header", "backend_api"],
