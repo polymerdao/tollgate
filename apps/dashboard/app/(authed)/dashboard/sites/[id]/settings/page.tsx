@@ -4,7 +4,6 @@ import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/hooks/use-site";
 import {
-  rotateSecret,
   updateOrigin,
   updateSiteStatus,
   deleteSite,
@@ -32,7 +31,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Copy, Eye, EyeOff } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import type { OriginMethod } from "@tollgate/shared";
 
 const methodLabels: Record<string, string> = {
@@ -48,10 +47,6 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
   const queryClient = useQueryClient();
   const { data: site, isLoading } = useSite(id);
 
-  const [showSecret, setShowSecret] = useState(false);
-  const [newSecret, setNewSecret] = useState<string | null>(null);
-  const [secretSaved, setSecretSaved] = useState(false);
-
   const [editingOrigin, setEditingOrigin] = useState(false);
   const [originMethod, setOriginMethod] = useState<OriginMethod>("ip_allowlist");
   const [originUrl, setOriginUrl] = useState("");
@@ -62,15 +57,6 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
       updateOrigin(id, data),
     onSuccess: () => {
       setEditingOrigin(false);
-      queryClient.invalidateQueries({ queryKey: ["sites", id] });
-    },
-  });
-
-  const rotateMutation = useMutation({
-    mutationFn: () => rotateSecret(id),
-    onSuccess: (data) => {
-      setNewSecret(data.secret);
-      setSecretSaved(true);
       queryClient.invalidateQueries({ queryKey: ["sites", id] });
     },
   });
@@ -90,10 +76,6 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
     },
   });
 
-  function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
-  }
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -105,11 +87,6 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
   }
 
   if (!site) return null;
-
-  const isSecretHeader = site.originMethod === "secret_header";
-  const maskedSecret = site.originSecret
-    ? site.originSecret.slice(0, 4) + "..." + site.originSecret.slice(-4)
-    : "---";
 
   return (
     <div className="space-y-6">
@@ -231,82 +208,6 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
           )}
         </CardContent>
       </Card>
-
-      {/* Secret Rotation */}
-      {isSecretHeader && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Secret Rotation</CardTitle>
-            <CardDescription>
-              Rotate the secret used in the X-Obul-Secret header.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">Current Secret:</span>
-              <code className="text-sm font-mono">
-                {showSecret ? (site.originSecret ?? "---") : maskedSecret}
-              </code>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSecret(!showSecret)}
-              >
-                {showSecret ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </Button>
-              {site.originSecret && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => copyToClipboard(site.originSecret!)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-
-            {newSecret && (
-              <div className="space-y-2 border border-emerald-500/30 bg-emerald-500/10 p-3">
-                <p className="text-sm font-medium text-emerald-400">New secret generated:</p>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 text-sm font-mono">{newSecret}</code>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => copyToClipboard(newSecret)}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  The old secret will remain valid for a short grace period.
-                </p>
-              </div>
-            )}
-
-            <Button
-              variant="outline"
-              onClick={() => rotateMutation.mutate()}
-              disabled={rotateMutation.isPending}
-            >
-              {rotateMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Rotate Secret
-            </Button>
-
-            {rotateMutation.isError && (
-              <p className="text-sm text-rose-400">
-                {rotateMutation.error instanceof Error
-                  ? rotateMutation.error.message
-                  : "Failed to rotate secret"}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Site Status */}
       <Card>
