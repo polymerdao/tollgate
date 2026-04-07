@@ -26,7 +26,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Globe, Plus, ArrowRight, Zap, Shield, BarChart3, CheckCircle, AlertTriangle } from "lucide-react";
+import { Globe, Plus, ArrowRight, Zap, Shield, BarChart3, AlertTriangle } from "lucide-react";
 
 export default function DashboardPage() {
   const { data: sites, isLoading: sitesLoading } = useSites();
@@ -181,7 +181,7 @@ export default function DashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Sites</CardTitle>
             <Link href="/dashboard/sites/new">
-              <Button size="sm" variant="outline">
+              <Button size="sm">
                 <Plus className="h-4 w-4" />
                 Add Site
               </Button>
@@ -274,33 +274,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Payout method status */}
-      {sites.some((s) => s.verifiedAt && !s.stripeAccountId && !s.payoutWalletAddress) && (
-        <Card className="border-amber-600/30 p-5">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-5 w-5 text-amber-500 shrink-0" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Payout method missing</p>
-              <p className="text-xs text-muted-foreground">
-                {sites.filter((s) => s.verifiedAt && !s.stripeAccountId && !s.payoutWalletAddress).length} site(s) have no payout method configured.{" "}
-                <Link href="/dashboard/payouts" className="underline underline-offset-2">
-                  Set up payouts
-                </Link>
-              </p>
-            </div>
-            <div className="ml-auto flex gap-2">
-              {sites
-                .filter((s) => s.verifiedAt && (s.stripeAccountId || s.payoutWalletAddress))
-                .map((s) => (
-                  <span key={s.id} className="flex items-center gap-1 text-xs text-emerald-500">
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    {s.domain}
-                  </span>
-                ))}
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }
