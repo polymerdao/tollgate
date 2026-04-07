@@ -9,6 +9,15 @@ export interface AnalyticsData {
   paymentsByBot: { userAgent: string; count: number; revenue: number }[];
 }
 
+export interface AggregateAnalyticsData {
+  totalRevenue: number;
+  totalPayments: number;
+  totalAttempts: number;
+  successRate: number;
+  revenueByDay: { date: string; amount: number }[];
+  topBots: { userAgent: string; count: number; revenue: number }[];
+}
+
 export interface SiteWithBalance extends Site {
   balance: number;
   allowlist?: string[];
@@ -112,6 +121,10 @@ export function updateExclusions(id: string, entries: { pattern: string }[]) {
 
 export function getAnalytics(id: string) {
   return apiFetch<AnalyticsData>(`/api/v1/sites/${id}/analytics`);
+}
+
+export function getAggregateAnalytics() {
+  return apiFetch<AggregateAnalyticsData>("/api/v1/analytics");
 }
 
 export function getPayouts(id: string) {
