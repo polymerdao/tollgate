@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSite } from "@/lib/hooks/use-site";
 import {
   rotateSecret,
+  updateOrigin,
   updateSiteStatus,
   deleteSite,
 } from "@/lib/api";
@@ -13,6 +14,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -24,6 +33,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { Loader2, Copy, Eye, EyeOff } from "lucide-react";
+import type { OriginMethod } from "@tollgate/shared";
 
 const methodLabels: Record<string, string> = {
   ip_allowlist: "IP Allowlist",
@@ -40,6 +50,20 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
   const [showSecret, setShowSecret] = useState(false);
   const [newSecret, setNewSecret] = useState<string | null>(null);
   const [secretSaved, setSecretSaved] = useState(false);
+
+  const [editingOrigin, setEditingOrigin] = useState(false);
+  const [originMethod, setOriginMethod] = useState<OriginMethod>("ip_allowlist");
+  const [originUrl, setOriginUrl] = useState("");
+  const [originSecret, setOriginSecret] = useState("");
+
+  const originMutation = useMutation({
+    mutationFn: (data: { originMethod: string; originUrl?: string; originSecret?: string }) =>
+      updateOrigin(id, data),
+    onSuccess: () => {
+      setEditingOrigin(false);
+      queryClient.invalidateQueries({ queryKey: ["sites", id] });
+    },
+  });
 
   const rotateMutation = useMutation({
     mutationFn: () => rotateSecret(id),
@@ -91,23 +115,117 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
       {/* Origin Configuration */}
       <Card>
         <CardHeader>
-          <CardTitle>Origin Configuration</CardTitle>
-          <CardDescription>
-            How Tollgate communicates with your origin after payment verification.
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Origin Configuration</CardTitle>
+              <CardDescription>
+                How Tollgate communicates with your origin after payment verification.
+              </CardDescription>
+            </div>
+            {!editingOrigin && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setOriginMethod(site.originMethod as OriginMethod);
+                  setOriginUrl(site.originUrl ?? "");
+                  setOriginSecret(site.originSecret ?? "");
+                  setEditingOrigin(true);
+                }}
+              >
+                Edit
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">Method:</span>
-            <Badge variant="secondary">
-              {methodLabels[site.originMethod] ?? site.originMethod}
-            </Badge>
-          </div>
-          {site.originUrl && (
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">Origin URL:</span>
-              <code className="text-sm font-mono">{site.originUrl}</code>
+          {editingOrigin ? (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Method</label>
+                <Select
+                  value={originMethod}
+                  onValueChange={(v) => setOriginMethod(v as OriginMethod)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ip_allowlist">IP Allowlist</SelectItem>
+                    <SelectItem value="secret_header">Secret Header</SelectItem>
+                    <SelectItem value="backend_api">Backend API</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {originMethod === "backend_api" && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Origin URL</label>
+                  <Input
+                    value={originUrl}
+                    onChange={(e) => setOriginUrl(e.target.value)}
+                    placeholder="https://api.example.com/verify"
+                  />
+                </div>
+              )}
+
+              {originMethod === "secret_header" && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Secret</label>
+                  <Input
+                    value={originSecret}
+                    onChange={(e) => setOriginSecret(e.target.value)}
+                    placeholder="Min 16 characters"
+                  />
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    originMutation.mutate({
+                      originMethod,
+                      originUrl: originMethod === "backend_api" ? originUrl : undefined,
+                      originSecret: originMethod === "secret_header" ? originSecret : undefined,
+                    });
+                  }}
+                  disabled={originMutation.isPending}
+                >
+                  {originMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Save
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingOrigin(false)}
+                  disabled={originMutation.isPending}
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              {originMutation.isError && (
+                <p className="text-sm text-rose-400">
+                  {originMutation.error instanceof Error
+                    ? originMutation.error.message
+                    : "Failed to update origin configuration"}
+                </p>
+              )}
             </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">Method:</span>
+                <Badge variant="secondary">
+                  {methodLabels[site.originMethod] ?? site.originMethod}
+                </Badge>
+              </div>
+              {site.originUrl && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-muted-foreground">Origin URL:</span>
+                  <code className="text-sm font-mono">{site.originUrl}</code>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
