@@ -36,6 +36,7 @@ import { Loader2, Copy, Eye, EyeOff } from "lucide-react";
 import type { OriginMethod } from "@tollgate/shared";
 
 const methodLabels: Record<string, string> = {
+  direct: "Direct",
   ip_allowlist: "IP Allowlist",
   secret_header: "Secret Header",
   backend_api: "Backend API",
@@ -151,6 +152,7 @@ export default function SettingsPage({ params }: { params: Promise<{ id: string 
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="direct">Direct</SelectItem>
                     <SelectItem value="ip_allowlist">IP Allowlist</SelectItem>
                     <SelectItem value="secret_header">Secret Header</SelectItem>
                     <SelectItem value="backend_api">Backend API</SelectItem>

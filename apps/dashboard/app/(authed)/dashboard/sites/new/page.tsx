@@ -261,6 +261,7 @@ export default function NewSitePage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="direct">Direct</SelectItem>
                   <SelectItem value="ip_allowlist">IP Allowlist</SelectItem>
                   <SelectItem value="secret_header">Secret Header</SelectItem>
                   <SelectItem value="backend_api">Backend API</SelectItem>

@@ -11,7 +11,7 @@ export const sites = sqliteTable("sites", {
   payoutWalletAddress: text("payout_wallet_address"),
   defaultPrice: integer("default_price").notNull(),
   originMethod: text("origin_method", {
-    enum: ["ip_allowlist", "secret_header", "backend_api"],
+    enum: ["direct", "ip_allowlist", "secret_header", "backend_api"],
   }).notNull(),
   originUrl: text("origin_url"),
   originSecret: text("origin_secret"),

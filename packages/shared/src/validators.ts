@@ -23,7 +23,7 @@ export const updatePricingSchema = z.object({
 });
 
 export const updateOriginSchema = z.object({
-  originMethod: z.enum(["ip_allowlist", "secret_header", "backend_api"]),
+  originMethod: z.enum(["direct", "ip_allowlist", "secret_header", "backend_api"]),
   originUrl: z.string().url().optional(),
   originSecret: z.string().min(16).max(256).optional(),
 });
