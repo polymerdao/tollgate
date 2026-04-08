@@ -1,0 +1,60 @@
+---
+title: Quickstart
+description: Get your site set up with Tollgate in under 10 minutes.
+---
+
+## 1. Create an account
+
+Go to [tollgate.obul.ai](https://tollgate.obul.ai) and sign in with Google.
+
+## 2. Add your site
+
+Click **Add Site** and enter your domain (e.g., `example.com`).
+
+## 3. Verify domain ownership
+
+Add a DNS TXT record to prove you own the domain:
+
+```
+_tollgate.example.com  TXT  "tollgate-verify=<your-verification-code>"
+```
+
+Click **Verify** in the dashboard once the record propagates.
+
+## 4. Set up the payment subdomain
+
+Add a CNAME record pointing your payment subdomain to the Tollgate gateway:
+
+```
+pay.example.com  CNAME  gw.obul.ai
+```
+
+## 5. Configure your integration
+
+Add a redirect rule on your CDN or edge platform so that AI bot traffic gets redirected to `pay.yourdomain.com`. 
+
+Choose your platform:
+- [Cloudflare](/integrations/cloudflare/)
+- [Vercel](/integrations/vercel/)
+- [Fastly](/integrations/fastly/)
+- [Akamai](/integrations/akamai/)
+- [AWS CloudFront](/integrations/aws/)
+- [Google Cloud](/integrations/google-cloud/)
+- [Azure Front Door](/integrations/azure/)
+- [DataDome](/integrations/datadome/)
+- [Imperva](/integrations/imperva/)
+- [WordPress VIP](/integrations/wordpress-vip/)
+- [Arc XP](/integrations/arc-xp/)
+- [General (any platform)](/integrations/general/)
+
+## 6. Set pricing
+
+In the dashboard, go to your site's **Pricing** tab. Set a default price per page (in USD). You can also configure path-specific pricing for premium content.
+
+## 7. Connect payouts
+
+Go to the **Payouts** tab and connect your Stripe account. You'll receive USD payouts when your balance exceeds $10.
+
+## Done
+
+AI bots visiting your site will now be redirected to the payment gateway. Bots that support x402 will pay automatically; others will receive a 402 response explaining how to get access.

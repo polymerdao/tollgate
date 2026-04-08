@@ -1,0 +1,6 @@
+name = "tollgate-docs"
+account_id = "4bfbcd216e0ba45b6384012c87f37584"
+compatibility_date = "2025-04-01"
+
+[assets]
+directory = "./dist"

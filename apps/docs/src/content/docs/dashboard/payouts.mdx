@@ -1,0 +1,29 @@
+---
+title: Payouts
+description: Receive payouts for bot payments via Stripe Connect.
+---
+
+## How payouts work
+
+Bot payments are made in USDC on Base chain. Tollgate collects these payments and converts them to USD payouts via Stripe Connect.
+
+### Payout flow
+
+1. Bots pay USDC on Base → your Tollgate balance increases
+2. When your balance exceeds **$10**, a payout is triggered
+3. Funds are sent to your connected Stripe account
+4. From Stripe, funds transfer to your bank account
+
+## Connecting Stripe
+
+1. Go to your site → **Payouts** tab
+2. Click **Connect Stripe Account**
+3. Complete the Stripe Connect onboarding flow
+4. Once connected, payouts happen automatically
+
+## Payout history
+
+The Payouts tab shows:
+- **Pending balance** — accumulated but not yet paid out
+- **Payout history** — list of completed payouts with amounts and dates
+- **Payment history** — individual bot payments received

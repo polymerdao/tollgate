@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/*
+ * Tollgate Docs theme — matches the dashboard (Space Grotesk, warm tan accent).
+ *
+ * Starlight gray scale runs white → gray-1 … gray-6 → black.
+ *   Light mode: white = page bg (lightest), black = text (darkest)
+ *   Dark mode:  black = page bg (darkest),  white = text (lightest)
+ *
+ * The grays are used for borders, muted text, sidebar items, etc.
+ * WCAG AA requires ≥ 4.5:1 for body text, ≥ 3:1 for large text / UI.
+ */
+
+:root {
+  --sl-font: 'Space Grotesk', system-ui, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Light mode ── */
+  --sl-color-white: hsl(40, 20%, 97%);       /* page bg — warm off-white */
+  --sl-color-gray-1: hsl(40, 12%, 90%);      /* subtle dividers */
+  --sl-color-gray-2: hsl(40, 8%, 78%);       /* borders */
+  --sl-color-gray-3: hsl(30, 6%, 52%);       /* muted text — 5.2:1 on white bg */
+  --sl-color-gray-4: hsl(25, 6%, 38%);       /* secondary text — 7.5:1 */
+  --sl-color-gray-5: hsl(20, 6%, 22%);       /* strong text */
+  --sl-color-gray-6: hsl(0, 0%, 10%);        /* headings */
+  --sl-color-black: hsl(0, 0%, 5%);          /* body text */
+
+  /* Accent: warm tan */
+  --sl-color-accent-low: hsl(40, 30%, 88%);  /* accent bg tint */
+  --sl-color-accent: hsl(35, 55%, 35%);      /* links, active states — 6.4:1 on white bg */
+  --sl-color-accent-high: hsl(30, 40%, 20%); /* accent text on light accent bg */
+
+  --sl-color-text-accent: hsl(35, 55%, 35%);
+}
+
+/* ── Dark mode ── */
+:root[data-theme='dark'] {
+  --sl-color-white: hsl(40, 10%, 93%);       /* primary text */
+  --sl-color-gray-1: hsl(35, 6%, 75%);       /* secondary text — 9:1 on black bg */
+  --sl-color-gray-2: hsl(30, 5%, 56%);       /* muted text — 5.5:1 */
+  --sl-color-gray-3: hsl(25, 4%, 38%);       /* dimmer labels — 3.2:1 (large text OK) */
+  --sl-color-gray-4: hsl(20, 3%, 22%);       /* borders, rules */
+  --sl-color-gray-5: hsl(15, 3%, 12%);       /* card / sidebar bg */
+  --sl-color-gray-6: hsl(10, 3%, 8%);        /* elevated surfaces */
+  --sl-color-black: hsl(0, 0%, 4%);          /* page bg */
+
+  --sl-color-accent-low: hsl(38, 25%, 13%);  /* accent bg tint */
+  --sl-color-accent: hsl(40, 50%, 68%);      /* links — 8.5:1 on black bg */
+  --sl-color-accent-high: hsl(42, 45%, 88%); /* accent heading text */
+
+  --sl-color-text-accent: hsl(40, 50%, 68%);
+}
+
+/* ── Header / nav bar ──
+ * Force header bg to always match page bg via variable.
+ * Use both data-theme AND @media selectors to handle race conditions
+ * with Starlight's theme detection script.
+ */
+:root {
+  --sl-color-bg-nav: var(--sl-color-bg);
+}
+
+header.header {
+  background-color: var(--sl-color-bg) !important;
+  border-bottom: 1px solid var(--sl-color-gray-4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Also catch prefers-color-scheme before JS sets data-theme */
+@media (prefers-color-scheme: dark) {
+  header.header {
+    background-color: hsl(0, 0%, 4%) !important;
+    border-bottom-color: hsl(20, 3%, 18%);
+  }
+}
+
+/* Right-side header icons — always use contrasting text color */
+header.header a[href],
+header.header button,
+header.header .social-icons a,
+starlight-theme-select button {
+  color: var(--sl-color-white) !important;
+}
+
+/* Site title */
+.site-title {
+  color: var(--sl-color-text-accent) !important;
+  font-weight: 600;
+}
+
+/* ── Sidebar ── */
+.sidebar-pane {
+  backdrop-filter: blur(12px);
+}
+
+:root[data-theme='dark'] .sidebar-pane {
+  background-color: rgba(10, 10, 10, 0.92);
+}
+
+/* ── Links ── */
+a:not([class]) {
+  color: var(--sl-color-text-accent);
+}
+
+/* ── Card icons — override Starlight's colorful defaults with tan accent ── */
+.card .icon {
+  background-color: var(--sl-color-accent-low);
+  border: 1px solid var(--sl-color-accent);
+  color: var(--sl-color-accent);
+}
+
+:root[data-theme='dark'] .card .icon {
+  background-color: hsl(38, 20%, 10%);
+  border-color: hsl(40, 40%, 35%);
+  color: hsl(40, 50%, 68%);
+}
+
+:root:not([data-theme='dark']) .card .icon {
+  background-color: hsl(40, 35%, 92%);
+  border-color: hsl(35, 35%, 60%);
+  color: hsl(35, 55%, 35%);
+}
+
+/* ── Code blocks ── */
+:root[data-theme='dark'] .expressive-code {
+  --ec-codeBg: hsl(0, 0%, 7%);
+  --ec-codeFg: hsl(40, 8%, 82%);
+  --ec-uiBorder: hsl(0, 0%, 18%);
+  --ec-frm-edTabBarBg: hsl(0, 0%, 5%);
+}
+
+:root:not([data-theme='dark']) .expressive-code {
+  --ec-codeBg: hsl(35, 15%, 94%);
+  --ec-codeFg: hsl(0, 0%, 15%);
+  --ec-uiBorder: hsl(40, 10%, 82%);
+  --ec-frm-edTabBarBg: hsl(35, 12%, 90%);
+}
+
+/* ── Cards ── */
+:root[data-theme='dark'] .sl-markdown-content .card {
+  background-color: hsl(15, 3%, 8%);
+  border-color: hsl(20, 3%, 18%);
+}
+
+:root:not([data-theme='dark']) .sl-markdown-content .card {
+  border-color: hsl(40, 8%, 78%);
+}
+
+/* ── Hero ── */
+.hero {
+  padding-block: 3rem;
+}
+
+.hero .tagline {
+  color: var(--sl-color-gray-1);
+}
+
+:root:not([data-theme='dark']) .hero .tagline {
+  color: var(--sl-color-gray-4);
+}
+
+/* ── Tables ── */
+table {
+  border-collapse: collapse;
+}
+
+:root[data-theme='dark'] table th {
+  background-color: hsl(15, 3%, 10%);
+}
+
+:root[data-theme='dark'] table td {
+  border-color: hsl(20, 3%, 18%);
+}
+
+/* ── Asides ── */
+.starlight-aside--note {
+  --sl-color-asides-text-accent: var(--sl-color-text-accent);
+  border-color: var(--sl-color-accent);
+}
+
+.starlight-aside--tip {
+  --sl-color-asides-text-accent: hsl(140, 45%, 48%);
+  border-color: hsl(140, 45%, 48%);
+}
+
+/* ── Transitions ── */
+a, button, .card, input {
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* ── Scrollbar (dark) ── */
+:root[data-theme='dark'] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+:root[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 5%);
+}
+
+:root[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 22%);
+  border-radius: 4px;
+}
+
+:root[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 32%);
+}

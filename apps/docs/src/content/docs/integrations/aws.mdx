@@ -1,0 +1,74 @@
+---
+title: AWS CloudFront
+description: Set up Tollgate bot paywall with AWS CloudFront and WAF.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+AWS offers two approaches: **WAF rules** for simple blocking or **Lambda@Edge** for path-preserving redirects.
+
+<Tabs>
+  <TabItem label="Lambda@Edge (Recommended)">
+    Lambda@Edge gives you full control to inspect user-agents and redirect with the original path preserved.
+
+    1. Create a new Lambda function in **us-east-1** (required for Lambda@Edge):
+
+    ```js
+    exports.handler = async (event) => {
+      const request = event.Records[0].cf.request;
+      const userAgent = request.headers['user-agent']?.[0]?.value || '';
+
+      const botPatterns = [
+        'chatgpt-user', 'gptbot', 'perplexitybot',
+        'anthropic-ai', 'claudebot', 'claude-web',
+        'ccbot', 'cohere-ai', 'bytespider',
+        'oai-searchbot', 'meta-externalagent',
+        'amazonbot', 'youbot', 'diffbot'
+      ];
+
+      const isBot = botPatterns.some(bot =>
+        userAgent.toLowerCase().includes(bot)
+      );
+
+      if (isBot) {
+        return {
+          status: '302',
+          statusDescription: 'Found',
+          headers: {
+            location: [{
+              key: 'Location',
+              value: `https://pay.YOUR_DOMAIN${request.uri}${request.querystring ? '?' + request.querystring : ''}`
+            }]
+          }
+        };
+      }
+
+      return request;
+    };
+    ```
+
+    2. Publish a version of the function
+    3. In your CloudFront distribution, go to **Behaviors → Edit**
+    4. Under **Function associations**, add the Lambda function as a **Viewer Request** trigger
+    5. Save and wait for the distribution to deploy
+  </TabItem>
+
+  <TabItem label="WAF Rules">
+    AWS WAF can match user-agent strings, but redirect support is limited. You can block bots and return a custom response directing them to the payment gateway.
+
+    1. Go to **AWS WAF** → **Web ACLs** → create or select your ACL
+    2. Add a **Rule** with a **String match condition**:
+       - **Inspect:** Header `User-Agent`
+       - **Match type:** Contains string
+       - **String to match:** `GPTBot` (create one rule per bot or use regex)
+    3. Set the action to **Block** with a **Custom response**:
+       - **Response code:** 302
+       - **Custom header:** `Location: https://pay.YOUR_DOMAIN/`
+
+    :::note
+    WAF custom responses don't support dynamic path preservation. Use Lambda@Edge for full path-preserving redirects.
+    :::
+  </TabItem>
+</Tabs>
+
+Replace `YOUR_DOMAIN` with your actual domain.

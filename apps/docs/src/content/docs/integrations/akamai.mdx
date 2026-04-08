@@ -1,0 +1,37 @@
+---
+title: Akamai
+description: Set up Tollgate bot paywall with Akamai Cloudlets or Property Manager.
+---
+
+Akamai allows you to set up redirection rules at the edge using Cloudlets or Property Manager.
+
+## Option A: Cloudlets (Visitor Prioritization or Edge Redirector)
+
+1. In your [Akamai Control Center](https://control.akamai.com), go to **Cloudlets** → **Edge Redirector**
+2. Create a new policy for your property
+3. Add redirect rules for each bot user-agent. For each rule:
+   - **Match condition:** `User-Agent` header contains the bot name (e.g., `ChatGPT-User`)
+   - **Redirect URL:** `https://pay.YOUR_DOMAIN`
+   - **Redirect type:** 302 (Temporary)
+   - **Preserve path:** Enabled
+4. Activate the policy on your property
+
+Repeat for each bot in the [user agent list](/reference/bot-user-agents/).
+
+## Option B: Property Manager Rules
+
+1. Go to **Property Manager** for your property
+2. Add a new rule with match criteria:
+   - **Request Header → User-Agent** matches regex:
+
+```
+(?i)(ChatGPT-User|GPTBot|PerplexityBot|anthropic-ai|ClaudeBot|Claude-Web|CCBot|cohere-ai|Bytespider|OAI-SearchBot|meta-externalagent|Amazonbot|YouBot|Diffbot)
+```
+
+3. Set the behavior to **Redirect**:
+   - **Redirect to:** `https://pay.YOUR_DOMAIN`
+   - **Response code:** 302
+   - **Preserve path and query string:** Yes
+4. Save and activate the property version
+
+Replace `YOUR_DOMAIN` with your actual domain.

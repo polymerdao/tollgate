@@ -1,0 +1,56 @@
+---
+title: Google Cloud
+description: Set up Tollgate bot paywall with Google Cloud Armor.
+---
+
+Google Cloud Armor lets you create security policies that match user-agent headers and redirect bot traffic.
+
+## Setup
+
+### Step 1: Create a Cloud Armor policy
+
+1. Go to **Network Security → Cloud Armor policies** in the Google Cloud Console
+2. Create a new policy (or add to an existing one)
+3. Set the **default rule** action to **Allow**
+
+### Step 2: Add bot redirect rules
+
+1. Click **Add rule** and select **Advanced mode**
+2. In the match expression, add user-agent conditions. Example for a single bot:
+
+```
+request.headers['user-agent'].contains('GPTBot')
+```
+
+For multiple bots, combine with `||`:
+
+```
+request.headers['user-agent'].lower().contains('chatgpt-user') ||
+request.headers['user-agent'].lower().contains('gptbot') ||
+request.headers['user-agent'].lower().contains('perplexitybot') ||
+request.headers['user-agent'].lower().contains('anthropic-ai') ||
+request.headers['user-agent'].lower().contains('claudebot') ||
+request.headers['user-agent'].lower().contains('claude-web') ||
+request.headers['user-agent'].lower().contains('ccbot') ||
+request.headers['user-agent'].lower().contains('cohere-ai') ||
+request.headers['user-agent'].lower().contains('bytespider') ||
+request.headers['user-agent'].lower().contains('oai-searchbot') ||
+request.headers['user-agent'].lower().contains('meta-externalagent') ||
+request.headers['user-agent'].lower().contains('amazonbot') ||
+request.headers['user-agent'].lower().contains('youbot') ||
+request.headers['user-agent'].lower().contains('diffbot')
+```
+
+3. Set the action to **Redirect** with target: `https://pay.YOUR_DOMAIN/`
+
+### Step 3: Attach to your backend service
+
+Associate the Cloud Armor policy with your Load Balancer's backend service.
+
+:::note
+Cloud Armor's redirect action doesn't preserve the original request path. For full path preservation, consider using a **backend service** that handles the redirect logic, or use a URL Map with a redirect action.
+:::
+
+Replace `YOUR_DOMAIN` with your actual domain.
+
+See the full list of [bot user agents](/reference/bot-user-agents/) to customize the detection rules.

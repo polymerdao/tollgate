@@ -1,0 +1,68 @@
+---
+title: Cloudflare
+description: Set up Tollgate bot paywall with Cloudflare Workers or Snippets.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+There are two ways to set up the bot redirect on Cloudflare: **Snippets** (Pro and above) and **Workers** (all plans).
+
+<Tabs>
+  <TabItem label="Snippets (Pro+)">
+    Snippets are lightweight code blocks that run on every request. Available on Pro, Business, and Enterprise plans.
+
+    1. In your Cloudflare dashboard, go to your zone → **Rules → Snippets**
+    2. Click **Create a snippet**
+    3. Name it (e.g., `tollgate_bot_redirect`)
+    4. Paste this code:
+
+    ```js
+    export default {
+      async fetch(request) {
+        const botUserAgents = [
+          "ChatGPT-User", "GPTBot", "PerplexityBot",
+          "anthropic-ai", "ClaudeBot", "Claude-Web",
+          "CCBot", "cohere-ai", "Bytespider",
+          "OAI-SearchBot", "meta-externalagent",
+          "Amazonbot", "YouBot", "Diffbot"
+        ];
+
+        const ua = request.headers.get("user-agent") || "";
+        const isBot = botUserAgents.some(bot =>
+          ua.toLowerCase().includes(bot.toLowerCase())
+        );
+
+        if (isBot) {
+          const url = new URL(request.url);
+          return Response.redirect(
+            `https://pay.YOUR_DOMAIN${url.pathname}${url.search}`,
+            302
+          );
+        }
+
+        return fetch(request);
+      }
+    };
+    ```
+
+    5. Click **Snippet rule** (top right) to configure when this runs
+    6. Under **When incoming requests match…**, set:
+       - **Field:** Hostname
+       - **Operator:** equals
+       - **Value:** `YOUR_DOMAIN`
+    7. Click **Deploy**
+  </TabItem>
+
+  <TabItem label="Workers (All Plans)">
+    Workers run on Cloudflare's edge and are available on all plans, including Free.
+
+    1. Go to **Compute (Workers) → Workers & Pages**
+    2. Create a new Worker with the same bot redirect code above
+    3. Go to your site → **Worker Routes → Add route**
+    4. Set route: `*.YOUR_DOMAIN/*` and assign your worker
+  </TabItem>
+</Tabs>
+
+Replace `YOUR_DOMAIN` with your actual domain (e.g., `example.com`).
+
+See the full list of [bot user agents](/reference/bot-user-agents/) to customize the detection list.

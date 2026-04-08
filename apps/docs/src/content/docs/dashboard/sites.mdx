@@ -1,0 +1,46 @@
+---
+title: Managing Sites
+description: Add and configure sites in the Tollgate dashboard.
+---
+
+## Adding a site
+
+1. Click **Add Site** on the dashboard overview page
+2. Enter your domain (e.g., `example.com`)
+3. Follow the setup wizard:
+   - **Domain verification** — add a DNS TXT record
+   - **Payment subdomain** — add a CNAME record for `pay.yourdomain.com`
+   - **Origin method** — configure how the gateway fetches your content
+   - **Integration** — set up bot redirect on your platform
+
+## Site status
+
+Each site has a status indicator:
+
+| Status | Meaning |
+|--------|---------|
+| **Pending** | Awaiting domain verification |
+| **Active** | Domain verified, gateway operational |
+| **Inactive** | Site disabled or verification expired |
+
+## Origin methods
+
+The origin method determines how the Tollgate gateway fetches your content after a bot pays:
+
+- **Direct** — Gateway fetches content from your public URL directly
+- **IP Allowlist** — Your origin only accepts requests from Tollgate's IPs
+- **Secret Header** — Gateway includes a secret header your server validates
+- **Backend API** — Gateway calls a dedicated API endpoint
+
+Configure this in your site's **Settings** tab.
+
+## Site settings
+
+From the site detail page, use the tabs to configure:
+
+- **Setup** — CNAME verification and integration guide
+- **Pricing** — Default and path-specific pricing
+- **Bots** — Bot allowlist and path exclusions
+- **Payouts** — Stripe Connect configuration
+- **Analytics** — Payment and traffic analytics
+- **Settings** — Origin method, domain settings

@@ -1,0 +1,60 @@
+---
+title: Integrations Overview
+description: Set up bot paywall integration with your CDN, cloud provider, or security platform.
+---
+
+Tollgate works by redirecting AI bot traffic from your site to the Tollgate payment gateway. This requires a redirect rule at your edge layer that detects bot user-agents and sends them to `pay.yourdomain.com`.
+
+## What you need
+
+1. A **Tollgate account** with a verified site and CNAME record set up (see [Quickstart](/getting-started/quickstart/))
+2. Access to your **CDN, cloud provider, or security platform** to configure redirect rules
+
+## How the redirect works
+
+When a request arrives at your edge:
+
+1. Check the `User-Agent` header against the list of [known AI bot user agents](/reference/bot-user-agents/)
+2. If it matches, issue a **302 redirect** to `https://pay.yourdomain.com{original_path}`
+3. Non-bot traffic passes through unchanged
+
+The key is preserving the original request path so Tollgate can serve the correct content after payment.
+
+## Available integrations
+
+### CDN & Edge Platforms
+
+| Platform | Method |
+|----------|--------|
+| [Cloudflare](/integrations/cloudflare/) | Workers or Snippets |
+| [Vercel](/integrations/vercel/) | WAF Custom Rules |
+| [Fastly](/integrations/fastly/) | VCL Snippets |
+| [Akamai](/integrations/akamai/) | Cloudlets or Property Manager |
+
+### Cloud Providers
+
+| Platform | Method |
+|----------|--------|
+| [AWS CloudFront](/integrations/aws/) | WAF Rules + Lambda@Edge |
+| [Google Cloud](/integrations/google-cloud/) | Cloud Armor Security Policy |
+| [Azure Front Door](/integrations/azure/) | Rule Sets |
+
+### Security Platforms
+
+| Platform | Method |
+|----------|--------|
+| [DataDome](/integrations/datadome/) | Bot Redirect Configuration |
+| [Imperva](/integrations/imperva/) | Security Rules |
+
+### CMS & Hosting Platforms
+
+| Platform | Method |
+|----------|--------|
+| [WordPress VIP](/integrations/wordpress-vip/) | Edge Configuration |
+| [Arc XP](/integrations/arc-xp/) | Delivery UI Edge Integrations |
+
+### Other
+
+| Platform | Method |
+|----------|--------|
+| [General Bot Paywall](/integrations/general/) | Any platform with user-agent redirect support |

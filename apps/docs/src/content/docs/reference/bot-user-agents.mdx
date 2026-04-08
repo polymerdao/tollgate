@@ -1,0 +1,58 @@
+---
+title: Bot User Agents
+description: Complete list of AI bot user-agents detected by Tollgate.
+---
+
+These are the known AI bot user-agent strings that Tollgate detects. Use this list when configuring bot redirect rules on your platform.
+
+## User-agent list
+
+| Bot | User-Agent String | Operator |
+|-----|-------------------|----------|
+| ChatGPT | `ChatGPT-User` | OpenAI |
+| GPTBot | `GPTBot` | OpenAI |
+| OAI SearchBot | `OAI-SearchBot` | OpenAI |
+| Claude | `ClaudeBot` | Anthropic |
+| Claude Web | `Claude-Web` | Anthropic |
+| Anthropic AI | `anthropic-ai` | Anthropic |
+| CCBot | `CCBot` | Common Crawl |
+| Perplexity | `PerplexityBot` | Perplexity |
+| Cohere | `cohere-ai` | Cohere |
+| ByteSpider | `Bytespider` | ByteDance |
+| Meta AI | `meta-externalagent` | Meta |
+| Amazon Bot | `Amazonbot` | Amazon |
+| You.com | `YouBot` | You.com |
+| Diffbot | `Diffbot` | Diffbot |
+
+## Regex pattern
+
+For platforms that support regex matching:
+
+```
+(ChatGPT-User|GPTBot|PerplexityBot|anthropic-ai|ClaudeBot|Claude-Web|CCBot|cohere-ai|Bytespider|OAI-SearchBot|meta-externalagent|Amazonbot|YouBot|Diffbot)
+```
+
+Case-insensitive version:
+
+```
+(?i)(chatgpt-user|gptbot|perplexitybot|anthropic-ai|claudebot|claude-web|ccbot|cohere-ai|bytespider|oai-searchbot|meta-externalagent|amazonbot|youbot|diffbot)
+```
+
+## Comma-separated list
+
+For platforms that accept comma-separated values:
+
+```
+ChatGPT-User, GPTBot, PerplexityBot, anthropic-ai, ClaudeBot, Claude-Web, CCBot, cohere-ai, Bytespider, OAI-SearchBot, meta-externalagent, Amazonbot, YouBot, Diffbot
+```
+
+## Testing
+
+You can test bot detection with curl:
+
+```bash
+# Test with a specific bot user-agent
+curl -I -A "GPTBot/1.0" https://YOUR_DOMAIN/some-page
+
+# Expected: 302 redirect to https://pay.YOUR_DOMAIN/some-page
+```

@@ -1,0 +1,44 @@
+---
+title: Tollgate
+description: x402 bot payment gateway — charge AI bots for content access via on-chain micropayments (USDC on Base).
+template: splash
+hero:
+  title: Monetize AI bot traffic with on-chain micropayments
+  tagline: Tollgate is an x402 bot payment gateway. Publishers charge AI bots for content access via USDC micropayments on Base.
+  actions:
+    - text: Get Started
+      link: /getting-started/quickstart/
+      icon: right-arrow
+    - text: View Integrations
+      link: /integrations/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why Tollgate?
+
+AI bots scrape publisher content at scale. Tollgate lets you charge for that access using the x402 HTTP payment protocol — no middlemen, no invoices, just on-chain micropayments.
+
+<CardGrid>
+  <Card title="On-chain payments" icon="rocket">
+    USDC micropayments on Base. Bots pay per-request via the x402 protocol. No accounts, no API keys required from the bot side.
+  </Card>
+  <Card title="Simple integration" icon="puzzle">
+    Add a DNS record and configure a redirect rule on your CDN. Works with Cloudflare, Vercel, Fastly, AWS, and many more.
+  </Card>
+  <Card title="Publisher dashboard" icon="setting">
+    Set per-page pricing, manage bot allowlists, track revenue, and configure payouts via Stripe Connect.
+  </Card>
+  <Card title="12+ platform integrations" icon="list-format">
+    Step-by-step guides for every major CDN, cloud provider, and security platform.
+  </Card>
+</CardGrid>
+
+## How it works
+
+1. **Bot visits your site** — an AI crawler requests a page on your domain
+2. **CDN redirects to payment gateway** — your edge layer detects the bot user-agent and issues a 302 redirect to `pay.yourdomain.com`
+3. **Gateway returns HTTP 402** — the Tollgate gateway responds with x402 payment terms (price in USDC, wallet address, payment details)
+4. **Bot pays on-chain** — the bot submits a USDC payment on Base and includes the transaction proof in a retry request
+5. **Content delivered** — Tollgate verifies the payment on-chain, fetches the content from your origin, and returns it to the bot

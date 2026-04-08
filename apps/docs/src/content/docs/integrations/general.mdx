@@ -1,0 +1,110 @@
+---
+title: General Bot Paywall
+description: Set up Tollgate bot paywall with any platform that supports user-agent based redirects.
+---
+
+If your CDN, hosting platform, or security tool is not listed in our specific integration guides, you can still set up the Tollgate bot paywall as long as your platform supports **user-agent based redirect** — the ability to inspect the `User-Agent` header and conditionally redirect traffic.
+
+## Prerequisites
+
+- Your Tollgate payment subdomain set up (e.g., `pay.yourdomain.com` → see [Quickstart](/getting-started/quickstart/))
+- Access to your platform's redirect/firewall configuration
+- The [bot user-agent list](/reference/bot-user-agents/)
+
+## General steps
+
+### Step 1: Find your redirect configuration
+
+Log into your platform and locate where you can define rules based on request headers. This is typically found under:
+
+- Firewall Rules or WAF Rules
+- Bot Management
+- Edge Rules or Request Manipulation
+- Traffic Policies
+
+### Step 2: Create a rule to match bot user-agents
+
+Create a rule that triggers when the `User-Agent` header matches any known AI bot:
+
+```
+User-Agent contains "ChatGPT-User" OR
+User-Agent contains "GPTBot" OR
+User-Agent contains "PerplexityBot" OR
+User-Agent contains "anthropic-ai" OR
+User-Agent contains "ClaudeBot" OR
+User-Agent contains "Claude-Web" OR
+User-Agent contains "CCBot" OR
+User-Agent contains "cohere-ai" OR
+User-Agent contains "YouBot" OR
+User-Agent contains "Diffbot" OR
+User-Agent contains "OAI-SearchBot" OR
+User-Agent contains "meta-externalagent" OR
+User-Agent contains "Bytespider" OR
+User-Agent contains "Amazonbot"
+```
+
+### Step 3: Set the redirect action
+
+Configure the action as a **302 (Temporary) redirect** to:
+
+```
+https://pay.YOUR_DOMAIN{original_request_path}
+```
+
+Preserve the original request path so Tollgate can serve the correct content after payment.
+
+### Step 4: Test
+
+Send a test request with a bot user-agent header:
+
+```bash
+curl -I -A "GPTBot/1.0" https://YOUR_DOMAIN/some-page
+```
+
+You should see a `302` redirect to `https://pay.YOUR_DOMAIN/some-page`.
+
+## Nginx example
+
+If you're using Nginx directly, add this to your configuration:
+
+```nginx
+map $http_user_agent $is_ai_bot {
+    default 0;
+    "~*ChatGPT-User"        1;
+    "~*GPTBot"              1;
+    "~*PerplexityBot"       1;
+    "~*anthropic-ai"        1;
+    "~*ClaudeBot"           1;
+    "~*Claude-Web"          1;
+    "~*CCBot"               1;
+    "~*cohere-ai"           1;
+    "~*Bytespider"          1;
+    "~*OAI-SearchBot"       1;
+    "~*meta-externalagent"  1;
+    "~*Amazonbot"           1;
+    "~*YouBot"              1;
+    "~*Diffbot"             1;
+}
+
+server {
+    # ... existing config ...
+
+    if ($is_ai_bot) {
+        return 302 https://pay.YOUR_DOMAIN$request_uri;
+    }
+}
+```
+
+Place the `map` block outside the `server` block (in the `http` context), then reload Nginx.
+
+## Apache example
+
+For Apache, use `mod_rewrite`:
+
+```apache
+RewriteEngine On
+RewriteCond %{HTTP_USER_AGENT} (ChatGPT-User|GPTBot|PerplexityBot|anthropic-ai|ClaudeBot|Claude-Web|CCBot|cohere-ai|Bytespider|OAI-SearchBot|meta-externalagent|Amazonbot|YouBot|Diffbot) [NC]
+RewriteRule ^(.*)$ https://pay.YOUR_DOMAIN%{REQUEST_URI} [R=302,L]
+```
+
+Replace `YOUR_DOMAIN` with your actual domain.

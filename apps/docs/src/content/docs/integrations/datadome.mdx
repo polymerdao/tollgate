@@ -1,0 +1,27 @@
+---
+title: DataDome
+description: Set up Tollgate bot paywall with DataDome bot management.
+---
+
+DataDome is a bot protection platform that can redirect detected AI bots to your Tollgate payment gateway.
+
+## Setup
+
+1. Log into your **DataDome dashboard**
+2. Go to **Management** in the navigation bar
+3. Under **Access Controls → AI agents**, configure each bot agent:
+   - Change the default action from **Allow** to **Redirect**
+   - Set the redirect URL to `https://pay.YOUR_DOMAIN`
+4. Enable redirect for each bot you want to monetize
+
+## How it works
+
+DataDome intercepts requests at the edge and classifies traffic using advanced fingerprinting. When it detects a known AI bot, it redirects the request to your Tollgate payment gateway instead of blocking it outright.
+
+This lets you monetize bot traffic rather than simply blocking it.
+
+:::note
+DataDome handles bot detection only. You still need to set up your Tollgate payment gateway (CNAME record, pricing, etc.) through the [Tollgate dashboard](https://tollgate.obul.ai).
+:::
+
+Replace `YOUR_DOMAIN` with your actual domain.

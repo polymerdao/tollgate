@@ -1,0 +1,85 @@
+---
+title: How It Works
+description: Architecture overview of the Tollgate bot payment gateway.
+---
+
+## Architecture
+
+Tollgate sits between your existing infrastructure and AI bots. No changes to your origin server are needed — you only add a redirect rule at your edge layer.
+
+```
+Bot Request                Your CDN / Edge
+─────────────────────────────────────────────
+                           ┌─────────────────┐
+  GET example.com/article  │                 │
+  User-Agent: GPTBot ───►  │  CDN detects    │
+                           │  bot UA         │
+                           │       │         │
+                           │       ▼         │
+                           │  302 redirect   │
+                           │  to pay.example │
+                           └────────┬────────┘
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │ Tollgate Gateway │
+                           │  (gw.obul.ai)   │
+                           │                 │
+                           │  Returns 402    │
+                           │  with x402      │
+                           │  payment terms  │
+                           └────────┬────────┘
+                                    │
+                              Bot pays USDC
+                              on Base chain
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │ Gateway verifies │
+                           │ on-chain payment │
+                           │       │         │
+                           │       ▼         │
+                           │ Fetches content  │
+                           │ from origin      │
+                           │       │         │
+                           │       ▼         │
+                           │ Returns content  │
+                           │ to bot           │
+                           └─────────────────┘
+```
+
+## Components
+
+### Payment Gateway (`pay.yourdomain.com`)
+
+The gateway is a Cloudflare Worker that handles the x402 payment flow. You point a `pay` subdomain at it via a CNAME record:
+
+```
+pay.yourdomain.com  CNAME  gw.obul.ai
+```
+
+When a bot hits the gateway, it:
+1. Looks up your site's pricing configuration
+2. Returns an HTTP 402 response with x402 payment terms
+3. On payment, verifies the USDC transaction on Base
+4. Fetches content from your origin server and returns it
+
+### Publisher Dashboard (`tollgate.obul.ai`)
+
+The dashboard is where you configure your sites:
+- **Domain verification** — prove ownership via DNS TXT record
+- **Pricing** — set default per-page price and path-specific overrides
+- **Bot management** — allowlist specific bots to bypass payment, exclude paths
+- **Origin method** — how the gateway fetches your content (direct, IP allowlist, secret header, or backend API)
+- **Payouts** — connect Stripe to receive USD payouts when your balance exceeds $10
+
+### Origin Methods
+
+The gateway needs to fetch your original content after a bot pays. You choose how:
+
+| Method | How it works |
+|--------|-------------|
+| **Direct** | Gateway fetches content directly from your public URL |
+| **IP Allowlist** | Your origin only accepts requests from Tollgate's IP addresses |
+| **Secret Header** | Gateway sends a secret header your origin validates |
+| **Backend API** | Gateway calls your API endpoint to retrieve content |

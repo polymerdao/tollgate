@@ -1,0 +1,33 @@
+---
+title: Bot Management
+description: Configure bot allowlists and path exclusions.
+---
+
+## Bot allowlist
+
+By default, all bots hitting your payment gateway must pay. You can allowlist specific bots to bypass payment entirely.
+
+### Adding allowlist entries
+
+1. Go to your site → **Bots** tab
+2. Under **Bot Allowlist**, click **Add Entry**
+3. Enter a user-agent pattern (e.g., `Googlebot`, `Bingbot`)
+
+Allowlisted bots will receive your content without going through the payment flow.
+
+## Path exclusions
+
+You can exclude specific URL paths from the payment requirement. Requests to excluded paths pass through without triggering payment.
+
+### Adding path exclusions
+
+1. Under **Path Exclusions**, click **Add Exclusion**
+2. Enter the path pattern to exclude (e.g., `/robots.txt`, `/sitemap.xml`, `/public/*`)
+
+### Common exclusions
+
+Consider excluding:
+- `/robots.txt` — so bots can still read your crawl directives
+- `/sitemap.xml` — so search engine bots can discover your pages
+- `/favicon.ico` — no value in charging for favicon requests
+- `/public/*` — any intentionally public content

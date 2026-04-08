@@ -1,0 +1,24 @@
+
+export default new Map([
+["src/content/docs/dashboard/bots.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fdashboard%2Fbots.mdx&astroContentModuleFlag=true")],
+["src/content/docs/dashboard/sites.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fdashboard%2Fsites.mdx&astroContentModuleFlag=true")],
+["src/content/docs/getting-started/quickstart.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fgetting-started%2Fquickstart.mdx&astroContentModuleFlag=true")],
+["src/content/docs/getting-started/how-it-works.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fgetting-started%2Fhow-it-works.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/akamai.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fakamai.mdx&astroContentModuleFlag=true")],
+["src/content/docs/dashboard/payouts.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fdashboard%2Fpayouts.mdx&astroContentModuleFlag=true")],
+["src/content/docs/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/dashboard/pricing.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fdashboard%2Fpricing.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/arc-xp.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Farc-xp.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/aws.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Faws.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/azure.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fazure.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/datadome.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fdatadome.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/cloudflare.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fcloudflare.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/fastly.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Ffastly.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/general.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fgeneral.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/google-cloud.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fgoogle-cloud.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/imperva.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fimperva.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/index.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Findex.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/vercel.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fvercel.mdx&astroContentModuleFlag=true")],
+["src/content/docs/integrations/wordpress-vip.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Fintegrations%2Fwordpress-vip.mdx&astroContentModuleFlag=true")],
+["src/content/docs/reference/bot-user-agents.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fdocs%2Freference%2Fbot-user-agents.mdx&astroContentModuleFlag=true")]]);
+		

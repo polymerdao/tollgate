@@ -1,0 +1,36 @@
+---
+title: Pricing
+description: Configure per-page pricing for bot content access.
+---
+
+## Default pricing
+
+Every site has a default price per page request. This is the amount (in USD) that bots pay to access any page on your site.
+
+Set this in the **Pricing** tab of your site's dashboard page.
+
+## Path-specific pricing
+
+You can override the default price for specific URL paths. This is useful for premium content that should cost more, or less valuable pages that should cost less.
+
+### Adding path pricing rules
+
+1. Go to your site → **Pricing** tab
+2. Under **Path Pricing Rules**, click **Add Rule**
+3. Enter:
+   - **Path pattern** — the URL path to match (e.g., `/premium/*`, `/api/data`)
+   - **Price** — the USD price for this path
+
+### Pattern matching
+
+Path patterns support wildcards:
+- `/articles/*` — matches any path under `/articles/`
+- `/api/data` — matches exactly `/api/data`
+
+### How pricing works at payment time
+
+When a bot requests a page:
+1. The gateway checks if the request path matches any path-specific rules
+2. If a match is found, that price is used
+3. Otherwise, the default site price applies
+4. The price is returned as part of the x402 payment terms in the HTTP 402 response

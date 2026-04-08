@@ -1,0 +1,35 @@
+---
+title: WordPress VIP
+description: Set up Tollgate bot paywall with WordPress VIP.
+---
+
+WordPress VIP supports edge-level bot redirect through its Integrations Center and CDN configuration.
+
+## Setup via Integrations Center
+
+1. Log into the **WordPress VIP Dashboard**
+2. Select **Integrations Center** from the top banner navigation
+3. Look for the bot redirect / AI monetization integration
+4. Enable the integration for your organization
+5. Configure the redirect target to `https://pay.YOUR_DOMAIN`
+
+## Manual Setup via CDN
+
+If the Integrations Center option is not available, you can configure bot redirect through your WordPress VIP CDN settings:
+
+1. Contact WordPress VIP support to enable custom edge rules
+2. Request a redirect rule for AI bot user-agents:
+   - **Match:** User-Agent header contains known bot patterns
+   - **Action:** 302 redirect to `https://pay.YOUR_DOMAIN{path}`
+
+### Bot user-agents to redirect
+
+```
+ChatGPT-User, GPTBot, PerplexityBot, anthropic-ai, ClaudeBot, Claude-Web, CCBot, cohere-ai, Bytespider, OAI-SearchBot, meta-externalagent, Amazonbot, YouBot, Diffbot
+```
+
+:::note
+WordPress VIP uses a managed CDN. Some configurations may require coordination with their support team.
+:::
+
+Replace `YOUR_DOMAIN` with your actual domain.

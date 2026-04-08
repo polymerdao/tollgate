@@ -1,0 +1,43 @@
+---
+title: Fastly
+description: Set up Tollgate bot paywall with Fastly VCL snippets.
+---
+
+Fastly uses Varnish Configuration Language (VCL) to process requests at the edge. You can add a VCL snippet that detects bot user-agents and redirects them to your Tollgate payment gateway.
+
+## Setup
+
+1. Go to your [Fastly Dashboard](https://manage.fastly.com) and select your service
+2. Click **Edit Configuration** and clone your current configuration
+3. Go to **VCL Snippets** in the sidebar
+4. Click **Create snippet** with type **within subroutine: recv**
+5. Paste the following VCL:
+
+```c
+if (req.http.User-Agent ~ "(?i)(ChatGPT-User|GPTBot|PerplexityBot|anthropic-ai|ClaudeBot|Claude-Web|CCBot|cohere-ai|Bytespider|OAI-SearchBot|meta-externalagent|Amazonbot|YouBot|Diffbot)") {
+  error 751 "https://pay.YOUR_DOMAIN" req.url;
+}
+```
+
+6. Create another snippet with type **within subroutine: error**:
+
+```c
+if (obj.status == 751) {
+  set obj.http.Location = obj.response + req.url;
+  set obj.status = 302;
+  set obj.response = "Found";
+  return(deliver);
+}
+```
+
+7. Click **Activate** to deploy the new configuration
+
+Replace `YOUR_DOMAIN` with your actual domain.
+
+## How it works
+
+- The `recv` snippet checks the `User-Agent` header against known bot patterns
+- When matched, it triggers a synthetic error 751 (a custom status used internally)
+- The `error` snippet catches the 751, builds the redirect URL (preserving the original path), and returns a 302 redirect
+
+See the full list of [bot user agents](/reference/bot-user-agents/) to customize the detection regex.

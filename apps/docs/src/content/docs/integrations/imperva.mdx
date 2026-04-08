@@ -1,0 +1,40 @@
+---
+title: Imperva
+description: Set up Tollgate bot paywall with Imperva Security Rules.
+---
+
+Imperva's security rules can redirect AI bot traffic to your Tollgate payment gateway.
+
+## Setup
+
+### Step 1: Navigate to Security Rules
+
+1. On the Imperva home page, select the **Site** you want to set up the paywall for
+2. In the left navigation, select **Security Rules**
+
+### Step 2: Create a redirect rule
+
+1. Click **Add Rule**
+2. Under the filtering condition, configure:
+   - **Condition:** User-Agent header matches known bot patterns
+   - Use the **Contains** operator to match bot user-agent strings:
+
+```
+ChatGPT-User, GPTBot, PerplexityBot, anthropic-ai, ClaudeBot, Claude-Web, CCBot, cohere-ai, Bytespider, OAI-SearchBot, meta-externalagent, Amazonbot, YouBot, Diffbot
+```
+
+3. Set the **Action** to **Redirect (302)**
+4. Set the redirect URL to: `https://pay.YOUR_DOMAIN`
+5. Enable **Preserve path** if available
+
+### Step 3: Save and test
+
+Save the rule and test it by sending a request with a bot user-agent header to verify the redirect works correctly.
+
+:::tip
+Imperva also supports advanced bot detection beyond user-agent matching. You can combine Tollgate with Imperva's machine-learning detection for comprehensive coverage.
+:::
+
+Replace `YOUR_DOMAIN` with your actual domain.
+
+See the full list of [bot user agents](/reference/bot-user-agents/) for the complete detection list.

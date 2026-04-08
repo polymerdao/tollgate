@@ -1,0 +1,31 @@
+---
+title: Arc XP
+description: Set up Tollgate bot paywall with Arc XP Edge Integrations.
+---
+
+Arc XP provides edge integration through its Delivery UI, allowing you to redirect AI bot traffic to your Tollgate payment gateway.
+
+## Setup
+
+1. Open **Delivery UI** in your Arc XP dashboard
+2. Go to **Edge Integrations** for the site you want to configure
+3. Select **View** for your site, then select **Edge Integrations**
+4. Scroll down to the bot redirect integration
+5. Enable the toggle on the right-hand side
+6. Configure the redirect target to `https://pay.YOUR_DOMAIN`
+
+## Default bot list
+
+When enabled without specifying specific user agents, all known AI bots will be redirected. The default list includes:
+
+```
+chatgpt-user, perplexitybot, gptbot, anthropic-ai, ccbot, claude-web, claudebot, cohere-ai, youbot, diffbot, oai-searchbot, meta-externalagent, amazonbot, bytespider
+```
+
+You can customize which bots are redirected by entering specific user-agent strings in the configuration.
+
+:::note
+For each additional site, repeat the setup steps in the Delivery UI.
+:::
+
+Replace `YOUR_DOMAIN` with your actual domain.

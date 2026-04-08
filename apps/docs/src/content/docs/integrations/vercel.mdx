@@ -1,0 +1,28 @@
+---
+title: Vercel
+description: Set up Tollgate bot paywall with Vercel WAF Custom Rules.
+---
+
+Vercel's Web Application Firewall (WAF) lets you create custom rules that match bot user-agents and redirect them.
+
+## Setup
+
+1. Go to your project → **Security → Firewall → Custom Rules**
+2. Create a new rule with condition: **User Agent → Matches Expression**
+3. Paste this regex pattern:
+
+```
+(ChatGPT-User|PerplexityBot|GPTBot|anthropic-ai|CCBot|Claude-Web|ClaudeBot|cohere-ai|YouBot|Diffbot|OAI-SearchBot|meta-externalagent|Bytespider|Amazonbot)
+```
+
+4. Set action to **Redirect** with destination:
+
+```
+https://pay.YOUR_DOMAIN/$1
+```
+
+5. Save and deploy the rule
+
+Replace `YOUR_DOMAIN` with your actual domain.
+
+See the full list of [bot user agents](/reference/bot-user-agents/) to customize the detection regex.

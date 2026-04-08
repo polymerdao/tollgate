@@ -1,0 +1,47 @@
+---
+title: Azure Front Door
+description: Set up Tollgate bot paywall with Azure Front Door rule sets.
+---
+
+Azure Front Door lets you configure rule sets that match request headers and redirect traffic.
+
+## Setup (Standard Tier)
+
+### Step 1: Create a Rule Set
+
+1. Navigate to your **Front Door** instance in the Azure Portal
+2. Click **Settings → Rule sets** in the left sidebar
+3. Click **Add** to create a new rule set
+
+### Step 2: Add bot redirect rules
+
+1. Click **Add rule** within the rule set
+2. Under **Conditions**, add a **Request header** condition:
+   - **Header name:** `User-Agent`
+   - **Operator:** Contains
+   - **Value:** Enter bot user-agents (one per rule, or use multiple values):
+
+```
+chatgpt-user, gptbot, perplexitybot, anthropic-ai, claudebot, claude-web, ccbot, cohere-ai, youbot, diffbot, oai-searchbot, meta-externalagent, bytespider, amazonbot
+```
+
+3. Under **Actions**, select **URL redirect**:
+   - **Redirect type:** Found (302)
+   - **Redirect protocol:** HTTPS
+   - **Hostname:** `pay.YOUR_DOMAIN`
+   - **Path:** Leave empty to preserve the original path
+
+4. Click **Save**
+
+### Step 3: Associate the Rule Set
+
+1. Click the **⋯** menu next to the rule set
+2. Select **Associate a route**
+3. Choose the route for your Front Door endpoint
+4. Save the association
+
+## Premium Tier
+
+Premium tier Front Door supports more advanced rules. The setup is similar, but you may also use the **WAF policy** to match bot user-agents with custom rules. Contact Azure support or refer to Azure's documentation for premium-specific configurations.
+
+Replace `YOUR_DOMAIN` with your actual domain.
